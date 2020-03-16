@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-03-16 21:37:32
+ * @LastEditTime: 2020-03-16 22:17:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -61,7 +61,7 @@ int main()
             if(events[i].data.fd == listenfd)
             {
                 // accept socket
-                connfd = accept(listenfd, (sockaddr *)&clientaddr, &clilen);
+                connfd = accept(listenfd, (sockaddr*)&clientaddr, &clilen);
                 if (connfd == -1)
                 {
                     perror("accept");
