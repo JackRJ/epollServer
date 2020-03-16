@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-03-16 21:07:37
+ * @LastEditTime: 2020-03-16 21:37:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -22,7 +22,7 @@
 
 int epfd;
 // 声明epoll_event结构体的变量,ev用于注册事件,数组用于回传要处理的事件
-struct epoll_event ev,events[20];
+struct epoll_event ev, events[20];
 
 int main()
 {
@@ -31,7 +31,7 @@ int main()
     struct sockaddr_in serveraddr;
     socklen_t clilen;
 
-    // 创建线程池
+    // 创建线程池 RAII
     std::shared_ptr<ThreadPool> threadPool(new ThreadPool());
     threadPool -> threadpool_create(THREAD_NUMBERS, QUEUE_SIZE);
 
@@ -52,9 +52,8 @@ int main()
     maxi = 0;
     while (1)
     {
-        printf("wait");
         // 等待epoll事件的发生
-        nfds = epoll_wait(epfd,events,20,500);
+        nfds = epoll_wait(epfd, events, 20, 500);
 
         //处理所发生的所有事件
         for (size_t i = 0; i < nfds; i++)
@@ -70,6 +69,7 @@ int main()
                 }
                 setSocketNonBlocking(connfd);
                 char *str = inet_ntoa(clientaddr.sin_addr);
+                printf("accept address: %s\n", str);
                 
                 // 设置用于读操作的文件描述符
                 ev.data.fd = connfd;
@@ -85,6 +85,8 @@ int main()
                 // read socket
             } else if (events[i].events & EPOLLOUT)
             {
+                if ((sockfd = events[i].data.fd) < 0)
+                    continue;
                 // write socket
             }
         }
