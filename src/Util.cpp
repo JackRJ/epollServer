@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-03-16 20:26:26
+ * @LastEditTime: 2020-03-18 11:16:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+const int MAX_BUFF = 4096;
 
 int setSocketNonBlocking(int fd)
 {
@@ -66,4 +68,46 @@ int socket_bind_listen(int port)
         return -1;
     }
     return listen_fd;
+}
+
+ssize_t readn(int fd, std::string &inBuffer, bool &zero)
+{
+    ssize_t nread = 0;
+    ssize_t readSum = 0;
+    while (true)
+    {
+        char buff[MAX_BUFF];
+        if ((nread = read(fd, buff, MAX_BUFF)) < 0)
+        {
+            if (errno == EINTR)
+                continue;
+            else if (errno == EAGAIN)
+            {
+                return readSum;
+            }  
+            else
+            {
+                perror("read error");
+                return -1;
+            }
+        }
+        else if (nread == 0)
+        {
+            zero = true;
+            break;
+        }
+        readSum += nread;
+        inBuffer += std::string(buff, buff + nread);
+    }
+    return readSum;
+}
+
+void worker(std::shared_ptr<void> args)
+{
+    std::shared_ptr<Args> args_ = std::static_pointer_cast<Args>(args);
+    // malloc error?
+    //std::shared_ptr<HttpData> httpData(new HttpData(args_ -> client));
+    //httpData -> startup();
+    HttpData httpData(args_ -> client);
+    httpData.startup();
 }

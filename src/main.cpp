@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-03-16 22:17:38
+ * @LastEditTime: 2020-03-18 11:12:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -10,6 +10,7 @@
 #include "ThreadPool.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <memory>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -28,7 +29,7 @@ int main()
 {
     int i, maxi, listenfd, connfd, sockfd,nfds;
     struct sockaddr_in clientaddr;
-    struct sockaddr_in serveraddr;
+    // struct sockaddr_in serveraddr;
     socklen_t clilen;
 
     // 创建线程池 RAII
@@ -83,11 +84,16 @@ int main()
                     continue;
                 
                 // read socket
+                // test
+                std::shared_ptr<Args> args_(new Args(sockfd));
+                std::shared_ptr<void> args = std::static_pointer_cast<void>(args_);
+                threadPool -> threadpool_add(args, &worker);
             } else if (events[i].events & EPOLLOUT)
             {
                 if ((sockfd = events[i].data.fd) < 0)
                     continue;
                 // write socket
+                // close(sockfd);
             }
         }
     }

@@ -1,4 +1,4 @@
-OBJS = Util.o ThreadPool.o main.o
+OBJS = Util.o ThreadPool.o HttpData.o main.o
 PP = g++
 CFLAGS = -Wall
 PTHREAD = -pthread
@@ -11,6 +11,9 @@ Util.o: Util.cpp Util.h
 
 ThreadPool.o: ThreadPool.cpp ThreadPool.h
 	$(PP) -c $(PTHREAD) $(CFLAGS) $< -o $@
+
+HttpData.o: HttpData.cpp HttpData.h 
+	$(PP) -c $(CFLAGS) $< -o $@
 
 clean:
 	rm -rf *.o

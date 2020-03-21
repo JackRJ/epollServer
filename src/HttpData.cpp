@@ -1,0 +1,350 @@
+/*
+ * @Author: your name
+ * @Date: 2020-03-17 21:44:09
+ * @LastEditTime: 2020-03-18 12:01:38
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: /try/src/HttpData.cpp
+ */
+#include "HttpData.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <string>
+#include <algorithm>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
+HttpData::HttpData(int fd):
+    fd_(fd),
+    error_(false),
+    HTTPVersion_(HTTP_11),
+    method_(METHOD_GET),
+    state_(STATE_PARSE_URI), 
+    hState_(H_START),
+    nowReadPos_(0)
+{}
+
+HttpData::~HttpData()
+{ /*test*/ close(fd_); }
+
+void HttpData::startup()
+{
+    handleRead();
+    // size_t i = 0, j = 0;
+    // int numchars;
+    // char buf[1024];
+    // char method[255];
+    // char url[255];
+    // // 读http 请求的第一行数据（request line），把请求方法存进 method 中
+    // numchars = get_line(buf, sizeof(buf));
+    // printf("buf: \n%s", buf);
+    // // attention
+    // while (!ISspace(buf[j]) && (i < sizeof(method) - 1))
+    // {
+    //     method[i] = buf[j];
+    //     ++i; ++j;
+    // }
+    // method[i] = '\0';
+    // //如果请求的方法不是 GET 或 POST 任意一个的话就直接发送 response 告诉客户端没实现该方法
+    // if (strcasecmp(method, "GET") && strcasecmp(method, "POST"))
+    // {
+    //     unimplement();
+    //     return;
+    // }
+
+    // // 如果是 POST 方法
+    // if (strcasecmp(method, "POST") == 0)
+    //     method_ = METHOD_POST;
+    // else if (strcasecmp(method, "GET") == 0)
+    //     method_ = METHOD_GET;
+    // i = 0;
+    // //跳过所有的空白字符(空格)
+    // while (ISspace(buf[j]) && (j < sizeof(buf)))
+    //     ++j;
+    // // 然后把 URL 读出来放到 url 数组中
+    // while (!ISspace(buf[j]) && (i < sizeof(url) - 1) && (j < sizeof(buf)))
+    // {
+    //     url[i] = buf[j];
+    //     ++i; ++j;
+    // }
+    // url[i] = '\0';
+    // url_ = url;
+    // // 如果这个请求是一个 GET 方法的话
+    // if (strcasecmp(method, "GET") == 0)
+    // {
+    //     // 去遍历这个 url，跳过字符 ？前面的所有字符，如果遍历完毕也没找到字符 ？则退出循环
+    //     auto pos = url_.find('?');
+    //     if (pos != url_.npos)
+    //         // 如果是 ？ 的话，证明这个请求需要调用 cgi，将参数存入header_
+    //         loadHeaders(pos);
+    // }
+}
+
+void HttpData::handleRead()
+{
+    bool zero = false;
+    int readNum = readn(fd_, inBuffer_, zero);
+    do
+    {
+        if (readNum < 0)
+        {
+            error_ = true;
+            perror("read");
+            bad_request();
+            break;
+        } else if (zero)
+        {
+            // 有请求出现但是读不到数据，可能是Request Aborted，或者来自网络的数据没有达到等原因
+            // 最可能是对端已经关闭了，统一按照对端已经关闭处理
+            if (readNum == 0)
+                break;
+        }
+        if (state_ == STATE_PARSE_URI)
+        {
+            if (!error_)
+            {
+                URIState flag = parseLine();
+                if (flag == PARSE_URI_AGAIN)
+                    break;
+                else if (flag == PARSE_URI_ERROR)
+                {
+                    perror("parse url");
+                    inBuffer_.clear();
+                    error_ = true;
+                    bad_request();
+                    break;
+                } else 
+                    state_ = STATE_PARSE_HEADERS;
+            }
+        }
+        if (state_ == STATE_PARSE_HEADERS)
+        {
+            HeaderState flag = parseHeader();
+            if (flag == PARSE_HEADER_AGAIN)
+                break;
+            else if (flag == PARSE_HEADER_ERROR)
+            {
+                perror("parse header");
+                error_ = true;
+                bad_request();
+                break;
+            }
+            if(method_ == METHOD_POST)
+            {
+                // POST方法准备
+                state_ = STATE_RECV_BODY;
+            }
+            else 
+            {
+                state_ = STATE_ANALYSIS;
+            }
+        }
+        if (state_ == STATE_RECV_BODY)
+        {}
+        if (state_ == STATE_ANALYSIS)
+        {}
+
+    } while (false);
+    
+}
+
+URIState HttpData::parseLine()
+{
+    // solve method url and httpversion
+    std::string &str = inBuffer_;
+    std::string cop = str;
+    // 读到完整的请求行再开始解析请求
+    size_t pos = str.find('\r', nowReadPos_);
+    if (pos < 0)
+        return PARSE_URI_AGAIN;
+    // 去掉请求行所占的空间，节省空间
+    std::string request_line = str.substr(0, pos);
+    if (str.size() > pos + 1)
+        str = str.substr(pos + 1);
+    else 
+        str.clear();
+    // Method
+    int posGet = request_line.find("GET");
+    int posPost = request_line.find("POST");
+    int posHead = request_line.find("HEAD");
+    if (posGet >= 0)
+    {
+        pos = posGet;
+        method_ = METHOD_GET;
+    }
+    else if (posPost >= 0)
+    {
+        pos = posPost;
+        method_ = METHOD_POST;
+    }
+    else if (posHead >= 0)
+    {
+        pos = posHead;
+        method_ = METHOD_HEAD;
+    }
+    else
+    {
+        // method not found
+        return PARSE_URI_ERROR;
+    }
+    // filename
+    pos = request_line.find("/", pos);
+    if (pos < 0)
+    {
+        url_ = "index.html";
+        HTTPVersion_ = HTTP_11;
+        return PARSE_URI_SUCCESS;
+    } else 
+    {
+        size_t _pos = request_line.find(' ', pos);
+        if (_pos < 0)
+            return PARSE_URI_ERROR;
+        else
+        {
+            if (_pos - pos > 1)
+            {
+                url_ = request_line.substr(pos + 1, _pos - pos - 1);
+                size_t __pos = url_.find('?');
+                if (__pos >= 0)
+                    url_ = url_.substr(0, __pos);
+            } else 
+                url_ = "index.html";
+        }
+        pos = _pos;
+    }
+    // HTTP 版本号
+    pos = request_line.find("/", pos);
+    if (pos < 0)
+        return PARSE_URI_ERROR;
+    else
+    {
+        if (request_line.size() - pos <= 3)
+            return PARSE_URI_ERROR;
+        else 
+        {
+            std::string ver = request_line.substr(pos + 1, 3);
+            if (ver == "1.0")
+                HTTPVersion_ = HTTP_10;
+            else if (ver == "1.1")
+                HTTPVersion_ = HTTP_11;
+            else
+                return PARSE_URI_ERROR;
+        }
+    }
+    return PARSE_URI_SUCCESS;
+}
+
+HeaderState HttpData::parseHeader()
+{
+    std::string &str = inBuffer_;
+    int key_start = -1, key_end = -1, value_start = -1, value_end = -1;
+    int now_read_line_begin = 0;
+    bool notFinish = true;
+    size_t i = 0;
+}
+
+void HttpData::parseBody()
+{}
+
+void HttpData::loadHeaders(int beginPos)
+{
+    std::string::iterator startpos = url_.begin() + beginPos;
+    do
+    {
+        ++startpos;
+        auto midpos = std::find(startpos, url_.end(), '=');
+        auto endpos = std::find(startpos, url_.end(), '&');
+        headers_[std::string(startpos, midpos)] = std::string(++midpos, endpos);
+        startpos = endpos;
+    } while(startpos != url_.end());
+}
+
+int HttpData::get_line(char* buf, int size)
+{
+    int i = 0;
+    char c = '\0';
+    int n;
+    while ((i < size - 1) && (c != '\n'))
+    {
+        // recv()包含于<sys/socket.h>,参读《TLPI》P1259, 
+        // 读一个字节的数据存放在 c 中
+        n = recv(fd_, &c, 1, 0);
+        if (n > 0)
+        {
+            if (c == '\r')
+            {
+                n = recv(fd_, &c, 1, 0);
+                if ((n > 0) && (c == '\n'))
+                    c = '\n';
+                    // recv(fd_, &c, 1, 0);
+                else
+                    c = '\n';
+            }
+            buf[i] = c;
+            ++i;
+        } else
+            c = '\n';
+    }
+    buf[i] = '\0';
+    return i;
+}
+
+void HttpData::bad_request()
+{
+    char buf[1024];
+    sprintf(buf, "HTTP/1.0 400 BAD REQUEST\r\n");
+    send(fd_, buf, sizeof(buf), 0);
+    sprintf(buf, "Content-type: text/html\r\n");
+    send(fd_, buf, sizeof(buf), 0);
+    sprintf(buf, "\r\n");
+    send(fd_, buf, sizeof(buf), 0);
+    sprintf(buf, "<P>Your browser sent a bad request, ");
+    send(fd_, buf, sizeof(buf), 0);
+    sprintf(buf, "such as a POST without a Content-Length.\r\n");
+    send(fd_, buf, sizeof(buf), 0);
+}
+
+void HttpData::not_found()
+{
+    char buf[1024];
+    sprintf(buf, "HTTP/1.0 404 NOT FOUND\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, SERVER_STRING);
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "Content-Type: text/html\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "<HTML><TITLE>Not Found</TITLE>\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "<BODY><P>The server could not fulfill\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "your request because the resource specified\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "is unavailable or nonexistent.\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "</BODY></HTML>\r\n");
+    send(fd_, buf, strlen(buf), 0);
+}
+
+void HttpData::unimplement()
+{
+    char buf[1024];
+    sprintf(buf, "HTTP/1.0 501 Method Not Implemented\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, SERVER_STRING);
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "Content-Type: text/html\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "<HTML><HEAD><TITLE>Method Not Implemented\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "</TITLE></HEAD>\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "<BODY><P>HTTP request method not supported.\r\n");
+    send(fd_, buf, strlen(buf), 0);
+    sprintf(buf, "</BODY></HTML>\r\n");
+    send(fd_, buf, strlen(buf), 0);
+}
