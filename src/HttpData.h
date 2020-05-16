@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-03-18 12:00:51
+ * @LastEditTime: 2020-05-16 11:10:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -32,6 +32,12 @@ enum URIState
     PARSE_URI_AGAIN = 1,
     PARSE_URI_ERROR,
     PARSE_URI_SUCCESS,
+};
+
+enum AnalysisState
+{
+    ANALYSIS_SUCCESS = 1,
+    ANALYSIS_ERROR
 };
 
 enum ProcessState
@@ -81,11 +87,15 @@ private:
     void unimplement();
     void loadHeaders(int beginPos);
     int get_line(char* buf, int size);
-    void handleRead();
+    
     URIState parseLine();
     ProcessState state_;
     ParseState hState_;
     HeaderState parseHeader();
+    AnalysisState analysisRequest();
+
+    void handleRead();
+    void handleWrite();
     void parseBody();
 public:
     void startup();

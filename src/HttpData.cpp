@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-16 10:04:44
+ * @LastEditTime: 2020-05-16 11:16:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -141,13 +141,42 @@ void HttpData::handleRead()
             }
         }
         if (state_ == STATE_RECV_BODY)
-        {}
+        {
+            state_ = STATE_ANALYSIS;
+        }
         if (state_ == STATE_ANALYSIS)
-        {}
-
+        {
+            AnalysisState flag = this -> analysisRequest();
+            if (flag == ANALYSIS_SUCCESS)
+            {
+                state_ = STATE_FINISH;
+                break;
+            } else 
+            {
+                error_ = true;
+                break;
+            }
+        }
     } while (false);
-    // test
-    not_found();
+    if (!error_)
+    {
+        if (outBuffer_.size() > 0)
+        {
+            handleWrite();
+        }
+    }
+}
+
+void HttpData::handleWrite()
+{
+    if (!error_)
+    {
+        if (writen(fd_, outBuffer_) < 0)
+        {
+            perror("writen");
+            error_ = 1;
+        }
+    }
 }
 
 URIState HttpData::parseLine()
@@ -259,6 +288,27 @@ void HttpData::loadHeaders(int beginPos)
         headers_[std::string(startpos, midpos)] = std::string(++midpos, endpos);
         startpos = endpos;
     } while(startpos != url_.end());
+}
+
+AnalysisState HttpData::analysisRequest()
+{
+    if (method_ == METHOD_POST)
+    {
+        //
+    } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
+    {
+        std::string header;
+        header += "HTTP/1.1 200 OK\r\n";
+
+        // test
+        if (url_ == "hello")
+        {
+            printf("fileName: %s\n", url_.c_str());
+            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
+            return ANALYSIS_SUCCESS;
+        }
+    }
+    return ANALYSIS_ERROR;
 }
 
 int HttpData::get_line(char* buf, int size)

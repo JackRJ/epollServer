@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-16 09:56:55
+ * @LastEditTime: 2020-05-16 11:12:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -100,6 +100,40 @@ ssize_t readn(int fd, std::string &inBuffer, bool &zero)
         inBuffer += std::string(buff, buff + nread);
     }
     return readSum;
+}
+
+ssize_t writen(int fd, std::string &sbuff)
+{
+    size_t nleft = sbuff.size();
+    ssize_t nwritten = 0;
+    ssize_t writeSum = 0;
+    const char *ptr = sbuff.c_str();
+    while (nleft > 0)
+    {
+        if ((nwritten = write(fd, ptr, nleft)) <= 0)
+        {
+            if (nwritten < 0)
+            {
+                if (errno == EINTR)
+                {
+                    nwritten = 0;
+                    continue;
+                }
+                else if (errno == EAGAIN)
+                    break;
+                else
+                    return -1;
+            }
+        }
+        writeSum += nwritten;
+        nleft -= nwritten;
+        ptr += nwritten;
+    }
+    if (writeSum == static_cast<int>(sbuff.size()))
+        sbuff.clear();
+    else
+        sbuff = sbuff.substr(writeSum);
+    return writeSum;
 }
 
 void worker(std::shared_ptr<void> args)
