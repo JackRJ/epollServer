@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-03-18 11:16:18
+ * @LastEditTime: 2020-05-16 09:56:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -106,8 +106,8 @@ void worker(std::shared_ptr<void> args)
 {
     std::shared_ptr<Args> args_ = std::static_pointer_cast<Args>(args);
     // malloc error?
-    //std::shared_ptr<HttpData> httpData(new HttpData(args_ -> client));
-    //httpData -> startup();
+    // std::shared_ptr<HttpData> httpData(new HttpData(args_ -> client));
+    // httpData -> startup();
     HttpData httpData(args_ -> client);
     httpData.startup();
 }

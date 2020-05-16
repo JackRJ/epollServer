@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-03-18 11:12:14
+ * @LastEditTime: 2020-05-16 10:03:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -42,6 +42,8 @@ int main()
     listenfd = socket_bind_listen(SERV_PORT);
     if(setSocketNonBlocking(listenfd) == -1)
         perror("setSocketNonBlocking");
+
+    printf("server started at port: %i.\n", SERV_PORT);
 
     // 设置与要处理的事件相关的文件描述符
     ev.data.fd = listenfd;
