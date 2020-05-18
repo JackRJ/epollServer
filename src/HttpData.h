@@ -1,15 +1,17 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-05-16 11:10:47
+ * @LastEditTime: 2020-05-18 21:56:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
  */
 #pragma once
 #include "Util.h"
+#include "API/DayList.h"
 #include <map>
 #include <string>
+#include <vector>
 
 #define ISspace(x) isspace((int)(x))
 #define SERVER_STRING "Server: jdbhttpd/0.1.0\r\n"
@@ -78,6 +80,7 @@ private:
     std::string url_;
     HttpVersion HTTPVersion_;
     std::map<std::string, std::string> headers_;
+    std::map<std::string, std::string> bodies;
     std::string inBuffer_;
     std::string outBuffer_;
     int nowReadPos_;
@@ -96,7 +99,7 @@ private:
 
     void handleRead();
     void handleWrite();
-    void parseBody();
+    int parseBody();
 public:
     void startup();
     HttpData(int fd);

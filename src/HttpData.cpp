@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-18 19:33:13
+ * @LastEditTime: 2020-05-18 21:59:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -121,11 +121,11 @@ void HttpData::handleRead()
         if (state_ == STATE_PARSE_HEADERS)
         {
             HeaderState flag = parseHeader();
-            printf("header nums: %i\n", headers_.size());
+            /*printf("header nums: %i\n", headers_.size());
             for (auto h : headers_)
             {
-                printf("%s : %s", h.first.c_str(), h.second());
-            }
+                printf("%s : %s\n", h.first.c_str(), h.second.c_str());
+            }*/
             if (flag == PARSE_HEADER_AGAIN)
                 break;
             else if (flag == PARSE_HEADER_ERROR)
@@ -371,15 +371,40 @@ HeaderState HttpData::parseHeader()
     }
     if (hState_ == H_END_LF)
     {
-        str = str.substr(i);
+        str = str.substr(i - 1);
         return PARSE_HEADER_SUCCESS;
     }
     str = str.substr(now_read_line_begin);
     return PARSE_HEADER_AGAIN;
 }
 
-void HttpData::parseBody()
-{}
+int HttpData::parseBody()
+{
+    bool error = 0;
+    std::string& str = inBuffer_;
+    int key_start = 0, key_end = 0;
+    int val_start = 0;
+    int i = 0;
+    for (; i < str.size(); ++i)
+    {
+        if (str[i] == '=')
+        {
+            key_end = i;
+            val_start = i + 1;
+        } else if (str[i] == '&')
+        {
+            std::string key = std::string(str.begin() + key_start, str.begin() + key_end);
+            std::string val = std::string(str.begin() + val_start, str.begin() + i);
+            bodies[key] = val;
+            key_start = i + 1;
+        }
+    }
+    std::string key = std::string(str.begin() + key_start, str.begin() + key_end);
+    std::string val = std::string(str.begin() + val_start, str.begin() + i);
+    bodies[key] = val;
+    if (error)
+        return -1;
+}
 
 void HttpData::loadHeaders(int beginPos)
 {
@@ -402,7 +427,19 @@ AnalysisState HttpData::analysisRequest()
         header += "HTTP/1.1 200 OK\r\n";
         if (url_ == "login")
         {
-            printf
+            this -> parseBody();
+            printf("bodies:%i\n", bodies.size());
+            for (auto h : bodies)
+            {
+                printf("%s : %s\n", h.first.c_str(), h.second.c_str());
+            }
+            if (login(bodies) == 1)
+            {
+                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
+                return ANALYSIS_SUCCESS;
+            }
+            bad_request();
+            return ANALYSIS_ERROR;
         }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {

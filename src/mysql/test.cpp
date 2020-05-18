@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 09:48:55
- * @LastEditTime: 2020-05-18 18:33:46
+ * @LastEditTime: 2020-05-18 19:38:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/test.cpp
@@ -44,7 +44,7 @@ int main()
             printf("\n");
             row = mysql_fetch_row(result);
         }*/
-        printf("%s", row[0]);
+        printf("%s\n", row[0]);
         mysql_close(&conn);
     }
 }
