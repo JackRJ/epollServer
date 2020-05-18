@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:08:57
- * @LastEditTime: 2020-05-16 11:12:39
+ * @LastEditTime: 2020-05-18 09:46:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.h
@@ -9,7 +9,7 @@
 #pragma once
 #include "HttpData.h"
 #include <memory>
-
+#include <mysql/mysql.h>
 
 struct Args
 {
