@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:08:57
- * @LastEditTime: 2020-05-18 22:26:33
+ * @LastEditTime: 2020-05-18 22:46:11
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.h
@@ -10,7 +10,7 @@
 #include "HttpData.h"
 #include <memory>
 #include <mysql/mysql.h>
-#include "mysql/DayListUser.h"
+#include "DayListUser.h"
 
 struct Args
 {
