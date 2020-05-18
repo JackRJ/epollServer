@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-16 11:12:30
+ * @LastEditTime: 2020-05-18 22:26:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -144,4 +144,14 @@ void worker(std::shared_ptr<void> args)
     // httpData -> startup();
     HttpData httpData(args_ -> client);
     httpData.startup();
+}
+
+int login(std::map<std::string, std::string> bodies)
+{
+    DayListUser dayListUser;
+    if (!bodies.count("account") || !bodies.count("cipher"))
+        return 0;
+    if (dayListUser.login(bodies["account"], bodies["cipher"]) == 1)
+        return 1;
+    return 0;
 }
