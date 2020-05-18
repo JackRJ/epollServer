@@ -1,14 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-05-18 21:56:43
+ * @LastEditTime: 2020-05-18 22:28:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
  */
 #pragma once
 #include "Util.h"
-#include "API/DayList.h"
 #include <map>
 #include <string>
 #include <vector>
