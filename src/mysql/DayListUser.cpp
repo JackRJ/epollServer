@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-05-18 18:27:00
+ * @LastEditTime: 2020-05-18 22:10:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -13,7 +13,7 @@ DayListUser::DayListUser():
 {
     // 初始化数据库
     mysql_init(&conn);
-    auto tmp = mysql_real_connect(&conn, "jack", "lovezrj", "day_list_user",0,NULL, NULL, CLIENT_FOUND_ROWS);
+    auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
     if (tmp)
         connected = 1;
 }
