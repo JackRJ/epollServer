@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-16 11:16:48
+ * @LastEditTime: 2020-05-18 19:33:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -121,6 +121,11 @@ void HttpData::handleRead()
         if (state_ == STATE_PARSE_HEADERS)
         {
             HeaderState flag = parseHeader();
+            printf("header nums: %i\n", headers_.size());
+            for (auto h : headers_)
+            {
+                printf("%s : %s", h.first.c_str(), h.second());
+            }
             if (flag == PARSE_HEADER_AGAIN)
                 break;
             else if (flag == PARSE_HEADER_ERROR)
@@ -272,6 +277,105 @@ HeaderState HttpData::parseHeader()
     int now_read_line_begin = 0;
     bool notFinish = true;
     size_t i = 0;
+    for (; i < str.size() && notFinish; ++i)
+    {
+        switch(hState_)
+        {
+            case H_START:
+            {
+                if (str[i] == '\n' || str[i] == '\r')
+                    break;
+                hState_ = H_KEY;
+                key_start = i;
+                now_read_line_begin = i;
+                break;
+            }
+            case H_KEY:
+            {
+                if (str[i] == ':')
+                {
+                    key_end = i;
+                    if (key_end - key_start <= 0)
+                        return PARSE_HEADER_ERROR;
+                    hState_ = H_COLON;
+                } else if (str[i] == '\n' || str[i] == '\r')
+                    return PARSE_HEADER_ERROR;
+                break;
+            }
+            case H_COLON:
+            {
+                if (str[i] == ' ')
+                    hState_ = H_SPACES_AFTER_COLON;
+                else 
+                    return PARSE_HEADER_ERROR;
+                break;
+            }
+            case H_SPACES_AFTER_COLON:
+            {
+                hState_ = H_VALUE;
+                value_start = i;
+                break;
+            }
+            case H_VALUE:
+            {
+                if (str[i] == '\r')
+                {
+                    hState_ = H_CR;
+                    value_end = i;
+                    if (value_end - value_start <= 0)
+                        return PARSE_HEADER_ERROR;
+                } else if (i - value_start > 255)
+                    return PARSE_HEADER_ERROR;
+                break;
+            }
+            case H_CR:
+            {
+                if (str[i] == '\n')
+                {
+                    hState_ = H_LF;
+                    std::string key(str.begin() + key_start, str.begin() + key_end);
+                    std::string value(str.begin() + value_start, str.begin() + value_end);
+                    headers_[key] = value;
+                    now_read_line_begin = i;
+                } else 
+                    return PARSE_HEADER_ERROR;
+                break;
+            }
+            case H_LF:
+            {
+                if (str[i] == '\r')
+                    hState_ = H_END_CR;
+                else 
+                {
+                    key_start = i;
+                    hState_ = H_KEY;
+                }
+                break;
+            }
+            case H_END_CR:
+            {
+                if (str[i] == '\n')
+                    hState_ = H_END_LF;
+                else 
+                    return PARSE_HEADER_ERROR;
+                break;
+            }
+            case H_END_LF:
+            {
+                notFinish = false;
+                key_start = i;
+                now_read_line_begin = i;
+                break;
+            }
+        }
+    }
+    if (hState_ == H_END_LF)
+    {
+        str = str.substr(i);
+        return PARSE_HEADER_SUCCESS;
+    }
+    str = str.substr(now_read_line_begin);
+    return PARSE_HEADER_AGAIN;
 }
 
 void HttpData::parseBody()
@@ -294,7 +398,12 @@ AnalysisState HttpData::analysisRequest()
 {
     if (method_ == METHOD_POST)
     {
-        //
+        std::string header;
+        header += "HTTP/1.1 200 OK\r\n";
+        if (url_ == "login")
+        {
+            printf
+        }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {
         std::string header;

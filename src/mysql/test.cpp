@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 09:48:55
- * @LastEditTime: 2020-05-18 18:27:25
+ * @LastEditTime: 2020-05-18 18:33:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/test.cpp
@@ -19,7 +19,7 @@ int main()
     MYSQL_RES *result = NULL;
     MYSQL_FIELD *field = NULL;
     mysql_init(&conn);
-    if (mysql_real_connect(&conn, "jack", "lovezrj", "day_list_user",0,NULL, NULL, CLIENT_FOUND_ROWS))
+    if (mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS))
     {
         printf("connect success!\n");
         res = mysql_query(&conn, "select cipher from User where account = '1129075520'");
