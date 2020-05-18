@@ -7,7 +7,7 @@ MYSQL = `mysql_config --cflags --libs`
 main: $(OBJS)
 	$(PP) $(PTHREAD) $(OBJS) -o $@
 
-DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
+DayListUser.o: DayListUser.cpp DayListUser.h
 	$(PP) $< $(MYSQL) -o $@
 
 Util.o: Util.cpp Util.h
