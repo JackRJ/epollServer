@@ -11,7 +11,7 @@ DayList.o: API/DayList.cpp API/DayList.h
 	$(PP) -c $(CFLAGS) $< -o $@
 
 DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
-	$(PP) -c $(MYSQL) $< -o $@
+	$(PP) $< $(MYSQL) -o $@
 
 Util.o: Util.cpp Util.h
 	$(PP) -c $(CFLAGS) $< -o $@
