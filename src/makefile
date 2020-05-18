@@ -2,7 +2,7 @@ OBJS = Util.o DayList.o DayListUser.o ThreadPool.o HttpData.o main.o
 PP = g++
 CFLAGS = -Wall
 PTHREAD = -pthread
-MYSQL = `mysql_config --cflags --libs` -shared
+MYSQL = `mysql_config --cflags --libs` -static
 
 main: $(OBJS)
 	$(PP) $(PTHREAD) $(OBJS) -o $@
