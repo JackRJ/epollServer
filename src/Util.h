@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:08:57
- * @LastEditTime: 2020-05-19 16:44:46
+ * @LastEditTime: 2020-05-19 17:08:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.h
@@ -31,3 +31,4 @@ ssize_t writen(int fd, std::string &sbuff);
 void worker(std::shared_ptr<void> args);
 
 int login(std::map<std::string, std::string>& bodies);
+int registe(std::string account, std::string cipher);

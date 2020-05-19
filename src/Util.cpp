@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 16:51:02
+ * @LastEditTime: 2020-05-19 17:18:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -163,7 +163,7 @@ int login(std::map<std::string, std::string>& bodies)
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
-        printf("res == 1\n");
+        printf("mysql error\n");
         return 0;
     }
     result = mysql_store_result(&conn);
@@ -177,5 +177,26 @@ int login(std::map<std::string, std::string>& bodies)
         return 1;
     printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
     return 0;
+    mysql_close(&conn);
+}
+
+int registe(std::string account, std::string cipher)
+{
+    MYSQL conn;
+    MYSQL_RES *result = NULL;
+    MYSQL_FIELD *field = NULL;
+    mysql_init(&conn);
+    auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
+    std::string str = "insert into User (name, sex, age, cipher, account) values ('***', '男', 20, '" 
+            + cipher + "','" + account + "');";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    my_ulonglong affected_row = mysql_affected_rows(&conn);
+    printf("%d rows affected.\n", (int)affected_row);
+    return 1;
     mysql_close(&conn);
 }

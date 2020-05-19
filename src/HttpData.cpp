@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-19 16:36:58
+ * @LastEditTime: 2020-05-19 17:08:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -442,6 +442,16 @@ AnalysisState HttpData::analysisRequest()
                 printf("login error\n");
             }
             bad_request();
+            return ANALYSIS_ERROR;
+        } else if (url_ == "register")
+        {
+            this -> parseBody();
+            if (!bodies.count("account") || !bodies.count("cipher"))
+                return ANALYSIS_ERROR;
+            std::string account = bodies["account"];
+            std::string cipher = bodies["cipher"];
+            if (registe(account, cipher) == 1)
+                return ANALYSIS_SUCCESS;
             return ANALYSIS_ERROR;
         }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
