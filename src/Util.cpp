@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 16:49:47
+ * @LastEditTime: 2020-05-19 16:51:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -175,7 +175,7 @@ int login(std::map<std::string, std::string>& bodies)
     }
     if (bodies["cipher"] == std::string(row[0]))
         return 1;
-    printf("not equ\n");
+    printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
     return 0;
     mysql_close(&conn);
 }
