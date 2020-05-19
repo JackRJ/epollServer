@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-05-18 22:10:13
+ * @LastEditTime: 2020-05-19 10:28:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -42,4 +42,9 @@ int DayListUser::login(std::string account, std::string cipher)
     if (cipher == std::string(row[0]))
         return 1;
     return 0;
+}
+
+int main()
+{
+    
 }
