@@ -8,7 +8,7 @@ LIBS = $(shell mysql_config --libs)
 CFLAGS = $(shell mysql_config --cflags)
 
 main: $(OBJS)
-	$(PP) $(PTHREAD) $(OBJS) -o $@ $(LIBS)
+	$(PP) $(PTHREAD) $(CFLAGS) $(OBJS) -o $@ $(LIBS)
 
 DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
 	$(PP) -o $@ $(CFLAGS) $< $(LIBS)
