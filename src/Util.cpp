@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 17:18:53
+ * @LastEditTime: 2020-05-19 18:06:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -187,7 +187,7 @@ int registe(std::string account, std::string cipher)
     MYSQL_FIELD *field = NULL;
     mysql_init(&conn);
     auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
-    std::string str = "insert into User (name, sex, age, cipher, account) values ('***', '男', 20, '" 
+    std::string str = "insert into User (name, sex, age, cipher, account) values ('***', 0, 20, '" 
             + cipher + "','" + account + "');";
     int res = mysql_query(&conn, str.c_str());
     if (res)
