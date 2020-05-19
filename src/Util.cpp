@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-18 22:26:13
+ * @LastEditTime: 2020-05-19 10:59:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -15,6 +15,7 @@
 #include <netinet/in.h>
 
 const int MAX_BUFF = 4096;
+class DayListUser;
 
 int setSocketNonBlocking(int fd)
 {
