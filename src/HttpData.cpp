@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-18 21:59:16
+ * @LastEditTime: 2020-05-19 16:36:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -437,6 +437,9 @@ AnalysisState HttpData::analysisRequest()
             {
                 outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
                 return ANALYSIS_SUCCESS;
+            } else 
+            {
+                printf("login error\n");
             }
             bad_request();
             return ANALYSIS_ERROR;
