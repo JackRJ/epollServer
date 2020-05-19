@@ -14,7 +14,7 @@ DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
 	$(PP) -o $@ $(CFLAGS) $< $(LIBS)
 
 Util.o: Util.cpp Util.h
-	$(PP) -c $(WALL) $< -o $@
+	$(PP) -c $(CFLAGS) $(WALL) $< -o $@ $(LIBS)
 
 ThreadPool.o: ThreadPool.cpp ThreadPool.h
 	$(PP) -c $(PTHREAD) $(WALL) $< -o $@
