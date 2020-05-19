@@ -11,7 +11,7 @@ main: $(OBJS)
 	$(PP) $(PTHREAD) $(OBJS) -o $@ $(LIBS)
 
 DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
-	$(PP) -o $@ $< $(CFLAGS)
+	$(PP) -o $@ $(CFLAGS) $< $(LIBS)
 
 Util.o: Util.cpp Util.h
 	$(PP) -c $(CFLAGS) $< -o $@
