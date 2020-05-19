@@ -4,11 +4,14 @@ CFLAGS = -Wall
 PTHREAD = -pthread
 MYSQL = `mysql_config --cflags --libs`
 
-main: $(OBJS)
-	$(PP) $(PTHREAD) $(OBJS) -o $@
+LIBS = $(shell mysql_config --libs)
+CFLAGS = $(shell mysql_config --cflags)
 
-DayListUser.o: DayListUser.cpp DayListUser.h
-	$(PP) $< $(MYSQL) -o $@
+main: $(OBJS)
+	$(PP) $(PTHREAD) $(OBJS) -o $@ $(LIBS)
+
+DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
+	$(PP) -o $@ $< $(CFLAGS)
 
 Util.o: Util.cpp Util.h
 	$(PP) -c $(CFLAGS) $< -o $@
