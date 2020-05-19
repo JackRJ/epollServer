@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 11:35:33
+ * @LastEditTime: 2020-05-19 11:36:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -154,8 +154,6 @@ int login(std::map<std::string, std::string> bodies)
     mysql_init(&conn);
     auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
     std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
-    MYSQL_RES *result = NULL;
-    MYSQL_FIELD *field = NULL;
     int res = mysql_query(&conn, str.c_str());
     if (res)
         return 0;
