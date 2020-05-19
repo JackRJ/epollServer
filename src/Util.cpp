@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 11:03:55
+ * @LastEditTime: 2020-05-19 11:35:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -148,10 +148,23 @@ void worker(std::shared_ptr<void> args)
 
 int login(std::map<std::string, std::string> bodies)
 {
-    std::shared_ptr<DayListUser> dayListUser(new DayListUser());
-    if (!bodies.count("account") || !bodies.count("cipher"))
+    MYSQL conn;
+    MYSQL_RES *result = NULL;
+    MYSQL_FIELD *field = NULL;
+    mysql_init(&conn);
+    auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
+    std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
+    MYSQL_RES *result = NULL;
+    MYSQL_FIELD *field = NULL;
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
         return 0;
-    if (dayListUser -> login(bodies["account"], bodies["cipher"]) == 1)
+    result = mysql_store_result(&conn);
+    MYSQL_ROW row = mysql_fetch_row(result);
+    if (!row)
+        return 0;
+    if (bodies["cipher"] == std::string(row[0]))
         return 1;
     return 0;
+    mysql_close(&conn);
 }

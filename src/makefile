@@ -1,4 +1,4 @@
-OBJS = Util.o DayListUser.o ThreadPool.o HttpData.o main.o 
+OBJS = Util.o ThreadPool.o HttpData.o main.o 
 PP = g++
 WALL = -Wall
 PTHREAD = -pthread
@@ -10,8 +10,8 @@ CFLAGS = $(shell mysql_config --cflags)
 main: $(OBJS)
 	$(PP) $(PTHREAD) $(CFLAGS) $(OBJS) -o $@ $(LIBS)
 
-DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
-	$(PP) -o $@ $(CFLAGS) $< $(LIBS)
+#DayListUser.o: mysql/DayListUser.cpp mysql/DayListUser.h
+	#$(PP) -o $@ $(CFLAGS) $< $(LIBS)
 
 Util.o: Util.cpp Util.h
 	$(PP) -c $(CFLAGS) $(WALL) $< -o $@ $(LIBS)
