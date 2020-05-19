@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 10:59:29
+ * @LastEditTime: 2020-05-19 11:02:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -149,10 +149,10 @@ void worker(std::shared_ptr<void> args)
 
 int login(std::map<std::string, std::string> bodies)
 {
-    DayListUser dayListUser;
+    std::shared_ptr<DayListUser> dayListUser(new DayListUser());
     if (!bodies.count("account") || !bodies.count("cipher"))
         return 0;
-    if (dayListUser.login(bodies["account"], bodies["cipher"]) == 1)
+    if (dayListUser -> login(bodies["account"], bodies["cipher"]) == 1)
         return 1;
     return 0;
 }
