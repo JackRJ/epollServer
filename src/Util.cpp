@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 16:46:27
+ * @LastEditTime: 2020-05-19 16:49:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -158,17 +158,24 @@ int login(std::map<std::string, std::string>& bodies)
         printf("params error\n");
         return 0;
     }
-    printf("prams success\n");
+    printf("params success\n");
     std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
     int res = mysql_query(&conn, str.c_str());
     if (res)
+    {
+        printf("res == 1\n");
         return 0;
+    }
     result = mysql_store_result(&conn);
     MYSQL_ROW row = mysql_fetch_row(result);
     if (!row)
+    {
+        printf("!row\n");
         return 0;
+    }
     if (bodies["cipher"] == std::string(row[0]))
         return 1;
+    printf("not equ\n");
     return 0;
     mysql_close(&conn);
 }
