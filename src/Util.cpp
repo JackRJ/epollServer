@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 11:36:21
+ * @LastEditTime: 2020-05-19 16:46:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -146,13 +146,19 @@ void worker(std::shared_ptr<void> args)
     httpData.startup();
 }
 
-int login(std::map<std::string, std::string> bodies)
+int login(std::map<std::string, std::string>& bodies)
 {
     MYSQL conn;
     MYSQL_RES *result = NULL;
     MYSQL_FIELD *field = NULL;
     mysql_init(&conn);
     auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
+    if (!bodies.count("account") || !bodies.count("cipher"))
+    {
+        printf("params error\n");
+        return 0;
+    }
+    printf("prams success\n");
     std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
     int res = mysql_query(&conn, str.c_str());
     if (res)
