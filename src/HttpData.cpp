@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-05-19 17:20:08
+ * @LastEditTime: 2020-06-02 16:39:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -169,6 +169,9 @@ void HttpData::handleRead()
         {
             handleWrite();
         }
+    } else 
+    {
+        bad_request();
     }
 }
 
@@ -433,16 +436,24 @@ AnalysisState HttpData::analysisRequest()
             {
                 printf("%s : %s\n", h.first.c_str(), h.second.c_str());
             }
-            if (login(bodies) == 1)
+            std::shared_ptr<DayListUser> user(new DayListUser());
+            if (user -> login(bodies) == 1)
+            {
+                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:1\r\nmsg:success}";
+            } else 
+            {
+                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:0\r\nmsg:error}";
+            }
+            /*if (login(bodies) == 1)
             {
                 outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
                 return ANALYSIS_SUCCESS;
             } else 
             {
                 printf("login error\n");
-            }
-            bad_request();
-            return ANALYSIS_ERROR;
+            }*/
+            // bad_request();
+            return ANALYSIS_SUCCESS;
         } else if (url_ == "register")
         {
             this -> parseBody();
@@ -450,10 +461,15 @@ AnalysisState HttpData::analysisRequest()
                 return ANALYSIS_ERROR;
             std::string account = bodies["account"];
             std::string cipher = bodies["cipher"];
-            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
-            if (registe(account, cipher) == 1)
-                return ANALYSIS_SUCCESS;
-            return ANALYSIS_ERROR;
+            // outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
+            std::shared_ptr<DayListUser> user(new DayListUser());
+            if (user -> registe(account, cipher) == 1)
+                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:1\r\nmsg:registe success}";
+            else 
+                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:0\r\nmsg:registe fail}";
+            /*if (registe(account, cipher) == 1)
+                return ANALYSIS_SUCCESS;*/
+            return ANALYSIS_SUCCESS;
         }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {

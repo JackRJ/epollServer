@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-05-19 18:17:00
+ * @LastEditTime: 2020-06-02 16:24:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -146,7 +146,7 @@ void worker(std::shared_ptr<void> args)
     httpData.startup();
 }
 
-int login(std::map<std::string, std::string>& bodies)
+/*int login(std::map<std::string, std::string>& bodies)
 {
     MYSQL conn;
     MYSQL_RES *result = NULL;
@@ -215,4 +215,4 @@ int registe(std::string account, std::string cipher)
     printf("%d rows affected.\n", (int)affected_row);
     return 1;
     mysql_close(&conn);
-}
+}*/
