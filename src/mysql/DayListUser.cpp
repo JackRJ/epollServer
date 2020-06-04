@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-02 16:35:22
+ * @LastEditTime: 2020-06-02 17:01:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -30,17 +30,6 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
     /*if (!connected)
         return -1;
     std::string str = "select cipher from User where account = '" + account + "'";
-    MYSQL_RES *result = NULL;
-    MYSQL_FIELD *field = NULL;
-    int res = mysql_query(&conn, str.c_str());
-    if (res)
-        return 0;
-    result = mysql_store_result(&conn);
-    MYSQL_ROW row = mysql_fetch_row(result);
-    if (!row)
-        return 0;
-    if (cipher == std::string(row[0]))
-        return 1;
     return 0;*/
     if (!bodies.count("account") || !bodies.count("cipher"))
     {

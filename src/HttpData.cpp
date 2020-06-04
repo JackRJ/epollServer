@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-02 16:39:44
+ * @LastEditTime: 2020-06-04 10:33:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -427,7 +427,7 @@ AnalysisState HttpData::analysisRequest()
     if (method_ == METHOD_POST)
     {
         std::string header;
-        header += "HTTP/1.1 200 OK\r\n";
+        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
         if (url_ == "login")
         {
             this -> parseBody();
@@ -439,20 +439,11 @@ AnalysisState HttpData::analysisRequest()
             std::shared_ptr<DayListUser> user(new DayListUser());
             if (user -> login(bodies) == 1)
             {
-                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:1\r\nmsg:success}";
+                outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"success\"}";
             } else 
             {
-                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:0\r\nmsg:error}";
+                outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"error\"}";
             }
-            /*if (login(bodies) == 1)
-            {
-                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
-                return ANALYSIS_SUCCESS;
-            } else 
-            {
-                printf("login error\n");
-            }*/
-            // bad_request();
             return ANALYSIS_SUCCESS;
         } else if (url_ == "register")
         {
@@ -480,7 +471,9 @@ AnalysisState HttpData::analysisRequest()
         if (url_ == "hello")
         {
             printf("fileName: %s\n", url_.c_str());
-            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
+            std::string c = std::string(100, '6');
+            std::string str = "{res : 1, msg : success}\r\n" + c + "\r\n";
+            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n" + str;
             return ANALYSIS_SUCCESS;
         }
     }
