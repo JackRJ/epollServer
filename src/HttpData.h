@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-02 16:26:36
+ * @LastEditTime: 2020-06-04 10:58:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -85,9 +85,6 @@ private:
     std::string outBuffer_;
     int nowReadPos_;
 
-    void bad_request();
-    void not_found();
-    void unimplement();
     void loadHeaders(int beginPos);
     int get_line(char* buf, int size);
     
@@ -97,6 +94,7 @@ private:
     HeaderState parseHeader();
     AnalysisState analysisRequest();
 
+    void handleError(int err_num, std::string short_msg);
     void handleRead();
     void handleWrite();
     int parseBody();

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-06-02 16:24:14
+ * @LastEditTime: 2020-06-04 10:54:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -133,6 +133,36 @@ ssize_t writen(int fd, std::string &sbuff)
         sbuff.clear();
     else
         sbuff = sbuff.substr(writeSum);
+    return writeSum;
+}
+
+ssize_t writen(int fd, void *buff, size_t n)
+{
+    size_t nleft = n;
+    ssize_t nwritten = 0;
+    ssize_t writeSum = 0;
+    char *ptr = (char*)buff;
+    while (nleft > 0)
+    {
+        if ((nwritten = write(fd, ptr, nleft)) <= 0)
+        {
+            if (nwritten < 0)
+            {
+                if (errno == EINTR)
+                {
+                    nwritten = 0;
+                    continue;
+                } else if (errno == EAGAIN)
+                {
+                    return writeSum;
+                } else 
+                    return -1;
+            }
+        }
+        writeSum += nwritten;
+        nleft -= nwritten;
+        ptr += nwritten;
+    }
     return writeSum;
 }
 

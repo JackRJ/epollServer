@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-04 10:33:10
+ * @LastEditTime: 2020-06-04 11:04:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -26,59 +26,15 @@ HttpData::HttpData(int fd):
 {}
 
 HttpData::~HttpData()
-{ /*test*/ close(fd_); }
+{
+    // test http 1.0 
+    close(fd_); 
+}
 
 void HttpData::startup()
 {
+    // start reading http data
     handleRead();
-    // size_t i = 0, j = 0;
-    // int numchars;
-    // char buf[1024];
-    // char method[255];
-    // char url[255];
-    // // 读http 请求的第一行数据（request line），把请求方法存进 method 中
-    // numchars = get_line(buf, sizeof(buf));
-    // printf("buf: \n%s", buf);
-    // // attention
-    // while (!ISspace(buf[j]) && (i < sizeof(method) - 1))
-    // {
-    //     method[i] = buf[j];
-    //     ++i; ++j;
-    // }
-    // method[i] = '\0';
-    // //如果请求的方法不是 GET 或 POST 任意一个的话就直接发送 response 告诉客户端没实现该方法
-    // if (strcasecmp(method, "GET") && strcasecmp(method, "POST"))
-    // {
-    //     unimplement();
-    //     return;
-    // }
-
-    // // 如果是 POST 方法
-    // if (strcasecmp(method, "POST") == 0)
-    //     method_ = METHOD_POST;
-    // else if (strcasecmp(method, "GET") == 0)
-    //     method_ = METHOD_GET;
-    // i = 0;
-    // //跳过所有的空白字符(空格)
-    // while (ISspace(buf[j]) && (j < sizeof(buf)))
-    //     ++j;
-    // // 然后把 URL 读出来放到 url 数组中
-    // while (!ISspace(buf[j]) && (i < sizeof(url) - 1) && (j < sizeof(buf)))
-    // {
-    //     url[i] = buf[j];
-    //     ++i; ++j;
-    // }
-    // url[i] = '\0';
-    // url_ = url;
-    // // 如果这个请求是一个 GET 方法的话
-    // if (strcasecmp(method, "GET") == 0)
-    // {
-    //     // 去遍历这个 url，跳过字符 ？前面的所有字符，如果遍历完毕也没找到字符 ？则退出循环
-    //     auto pos = url_.find('?');
-    //     if (pos != url_.npos)
-    //         // 如果是 ？ 的话，证明这个请求需要调用 cgi，将参数存入header_
-    //         loadHeaders(pos);
-    // }
 }
 
 void HttpData::handleRead()
@@ -91,7 +47,7 @@ void HttpData::handleRead()
         {
             error_ = true;
             perror("read");
-            bad_request();
+            handleError(400, "BAD REQUEST");
             break;
         } else if (zero)
         {
@@ -112,7 +68,7 @@ void HttpData::handleRead()
                     perror("parse url");
                     inBuffer_.clear();
                     error_ = true;
-                    bad_request();
+                    handleError(400, "BAD REQUEST");
                     break;
                 } else 
                     state_ = STATE_PARSE_HEADERS;
@@ -121,18 +77,13 @@ void HttpData::handleRead()
         if (state_ == STATE_PARSE_HEADERS)
         {
             HeaderState flag = parseHeader();
-            /*printf("header nums: %i\n", headers_.size());
-            for (auto h : headers_)
-            {
-                printf("%s : %s\n", h.first.c_str(), h.second.c_str());
-            }*/
             if (flag == PARSE_HEADER_AGAIN)
                 break;
             else if (flag == PARSE_HEADER_ERROR)
             {
                 perror("parse header");
                 error_ = true;
-                bad_request();
+                handleError(400, "BAD REQUEST");
                 break;
             }
             if(method_ == METHOD_POST)
@@ -171,7 +122,7 @@ void HttpData::handleRead()
         }
     } else 
     {
-        bad_request();
+        handleError(400, "BAD REQUEST");
     }
 }
 
@@ -452,14 +403,11 @@ AnalysisState HttpData::analysisRequest()
                 return ANALYSIS_ERROR;
             std::string account = bodies["account"];
             std::string cipher = bodies["cipher"];
-            // outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello World";
             std::shared_ptr<DayListUser> user(new DayListUser());
             if (user -> registe(account, cipher) == 1)
-                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:1\r\nmsg:registe success}";
+                outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"registe\":\"success\"}";
             else 
-                outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n{res:0\r\nmsg:registe fail}";
-            /*if (registe(account, cipher) == 1)
-                return ANALYSIS_SUCCESS;*/
+                outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"registe\":\"fail\"}";
             return ANALYSIS_SUCCESS;
         }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
@@ -510,61 +458,25 @@ int HttpData::get_line(char* buf, int size)
     return i;
 }
 
-void HttpData::bad_request()
+void HttpData::handleError(int err_num, std::string short_msg)
 {
-    char buf[1024];
-    sprintf(buf, "HTTP/1.0 400 BAD REQUEST\r\n");
-    send(fd_, buf, sizeof(buf), 0);
-    sprintf(buf, "Content-type: text/html\r\n");
-    send(fd_, buf, sizeof(buf), 0);
-    sprintf(buf, "\r\n");
-    send(fd_, buf, sizeof(buf), 0);
-    sprintf(buf, "<P>Your browser sent a bad request, ");
-    send(fd_, buf, sizeof(buf), 0);
-    sprintf(buf, "such as a POST without a Content-Length.\r\n");
-    send(fd_, buf, sizeof(buf), 0);
-}
+    std::string body_buff, header_buff;
+    char send_buff[4096];
+    body_buff += "<html><title>哎~出错了</title>";
+    body_buff += "<body bgcolor=\"ffffff\">";
+    body_buff += std::to_string(err_num) + short_msg;
+    body_buff += "<hr><em> RJ's Web Server</em>\n</body></html>";
 
-void HttpData::not_found()
-{
-    char buf[1024];
-    sprintf(buf, "HTTP/1.0 404 NOT FOUND\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, SERVER_STRING);
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "Content-Type: text/html\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "<HTML><TITLE>Not Found</TITLE>\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "<BODY><P>The server could not fulfill\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "your request because the resource specified\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "is unavailable or nonexistent.\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "</BODY></HTML>\r\n");
-    send(fd_, buf, strlen(buf), 0);
-}
+    header_buff += "HTTP/1.1 " + std::to_string(err_num) + short_msg + "\r\n";
+    header_buff += "Content-Type: text/html\r\n";
+    header_buff += "Connection: Close\r\n";
+    header_buff += "Content-Length: " + std::to_string(body_buff.size()) + "\r\n";
+    header_buff += "Server: LinYa's Web Server\r\n";;
+    header_buff += "\r\n";
 
-void HttpData::unimplement()
-{
-    char buf[1024];
-    sprintf(buf, "HTTP/1.0 501 Method Not Implemented\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, SERVER_STRING);
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "Content-Type: text/html\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "<HTML><HEAD><TITLE>Method Not Implemented\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "</TITLE></HEAD>\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "<BODY><P>HTTP request method not supported.\r\n");
-    send(fd_, buf, strlen(buf), 0);
-    sprintf(buf, "</BODY></HTML>\r\n");
-    send(fd_, buf, strlen(buf), 0);
+    // 错误处理不考虑writen不完的情况
+    sprintf(send_buff, "%s", header_buff.c_str());
+    writen(this -> fd_, send_buff, strlen(send_buff));
+    sprintf(send_buff, "%s", body_buff.c_str());
+    writen(this -> fd_, send_buff, strlen(send_buff));
 }
