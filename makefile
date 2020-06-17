@@ -1,5 +1,5 @@
 PP = g++
-OBJ := main.o Util.o ThreadPool.o HttpData.o DayListUser.o
+OBJ := main.o Util.o ThreadPool.o HttpData.o DayList.o DayListUser.o 
 
 PTHREAD := -pthread
 WALL = -Wall
@@ -13,6 +13,7 @@ BIN_DIR := $(TOP_DIR)/bin
 BIN := main
 SUB_DIR := src \
 			src/mysql \
+			src/API \
 			obj
 export PP SRC INCLUDE OBJ PTHREAD MYSQL TOP_DIR OBJ_DIR BIN_DIR BIN WALL LIBS CFLAGS
 

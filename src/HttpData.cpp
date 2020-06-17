@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-04 11:04:45
+ * @LastEditTime: 2020-06-17 16:55:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -14,6 +14,12 @@
 #include <algorithm>
 #include <sys/socket.h>
 #include <netinet/in.h>
+
+std::map<std::string, APIpath> HttpData::hash_ = 
+    {
+        std::make_pair("daylist/login", daylist_login),
+        std::make_pair("daylist/register", daylist_register)
+    };
 
 HttpData::HttpData(int fd):
     fd_(fd),
@@ -28,7 +34,8 @@ HttpData::HttpData(int fd):
 HttpData::~HttpData()
 {
     // test http 1.0 
-    close(fd_); 
+    if (HTTPVersion_ == 1 || error_)
+        close(fd_); 
 }
 
 void HttpData::startup()
@@ -46,7 +53,7 @@ void HttpData::handleRead()
         if (readNum < 0)
         {
             error_ = true;
-            perror("read");
+            perror("read error");
             handleError(400, "BAD REQUEST");
             break;
         } else if (zero)
@@ -65,7 +72,7 @@ void HttpData::handleRead()
                     break;
                 else if (flag == PARSE_URI_ERROR)
                 {
-                    perror("parse url");
+                    perror("parse url error");
                     inBuffer_.clear();
                     error_ = true;
                     handleError(400, "BAD REQUEST");
@@ -81,7 +88,7 @@ void HttpData::handleRead()
                 break;
             else if (flag == PARSE_HEADER_ERROR)
             {
-                perror("parse header");
+                perror("parse header error");
                 error_ = true;
                 handleError(400, "BAD REQUEST");
                 break;
@@ -195,6 +202,7 @@ URIState HttpData::parseLine()
             {
                 url_ = request_line.substr(pos + 1, _pos - pos - 1);
                 size_t __pos = url_.find('?');
+                // params to do 
                 if (__pos >= 0)
                     url_ = url_.substr(0, __pos);
             } else 
@@ -360,29 +368,29 @@ int HttpData::parseBody()
         return -1;
 }
 
-void HttpData::loadHeaders(int beginPos)
-{
-    std::string::iterator startpos = url_.begin() + beginPos;
-    do
-    {
-        ++startpos;
-        auto midpos = std::find(startpos, url_.end(), '=');
-        auto endpos = std::find(startpos, url_.end(), '&');
-        headers_[std::string(startpos, midpos)] = std::string(++midpos, endpos);
-        startpos = endpos;
-    } while(startpos != url_.end());
-}
-
 AnalysisState HttpData::analysisRequest()
 {
     if (method_ == METHOD_POST)
     {
         std::string header;
         header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
-        if (url_ == "login")
+        switch (hash_[url_])
+        {
+            case daylist_login : 
+                this -> parseBody();
+                if (loginAPI(bodies) == 1)
+                    outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"success\"}";
+                else 
+                    outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"error\"}";
+                return ANALYSIS_SUCCESS;
+                break;
+            case daylist_register : break;
+            default : break;
+        }
+        /*if (url_ == "login")
         {
             this -> parseBody();
-            printf("bodies:%i\n", bodies.size());
+            /*printf("bodies:%i\n", bodies.size());
             for (auto h : bodies)
             {
                 printf("%s : %s\n", h.first.c_str(), h.second.c_str());
@@ -409,7 +417,7 @@ AnalysisState HttpData::analysisRequest()
             else 
                 outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"registe\":\"fail\"}";
             return ANALYSIS_SUCCESS;
-        }
+        }*/
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {
         std::string header;
@@ -426,36 +434,6 @@ AnalysisState HttpData::analysisRequest()
         }
     }
     return ANALYSIS_ERROR;
-}
-
-int HttpData::get_line(char* buf, int size)
-{
-    int i = 0;
-    char c = '\0';
-    int n;
-    while ((i < size - 1) && (c != '\n'))
-    {
-        // recv()包含于<sys/socket.h>,参读《TLPI》P1259, 
-        // 读一个字节的数据存放在 c 中
-        n = recv(fd_, &c, 1, 0);
-        if (n > 0)
-        {
-            if (c == '\r')
-            {
-                n = recv(fd_, &c, 1, 0);
-                if ((n > 0) && (c == '\n'))
-                    c = '\n';
-                    // recv(fd_, &c, 1, 0);
-                else
-                    c = '\n';
-            }
-            buf[i] = c;
-            ++i;
-        } else
-            c = '\n';
-    }
-    buf[i] = '\0';
-    return i;
 }
 
 void HttpData::handleError(int err_num, std::string short_msg)

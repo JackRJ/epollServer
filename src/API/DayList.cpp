@@ -1,19 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-05-18 21:56:05
+ * @LastEditTime: 2020-06-17 17:24:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
  */ 
 #include "DayList.h"
+#include <memory>
 
-int login(std::map<std::string, std::string> bodies)
+int loginAPI(std::map<std::string, std::string>& bodies)
 {
-    DayListUser dayListUser;
-    if (!bodies.count("account") || !bodies.count("cipher"))
-        return 0;
-    if (dayListUser.login(bodies["account"], bodies["cipher"]) == 1)
-        return 1;
-    return 0;
+    std::shared_ptr<DayListUser> user(new DayListUser());
+    return user -> login(bodies);
 }

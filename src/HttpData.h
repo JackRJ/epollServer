@@ -1,14 +1,15 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-04 10:58:41
+ * @LastEditTime: 2020-06-17 16:52:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
  */
 #pragma once
 #include "Util.h"
-#include "mysql/DayListUser.h"
+//#include "mysql/DayListUser.h"
+#include "API/DayList.h"
 #include <map>
 #include <string>
 #include <vector>
@@ -71,33 +72,41 @@ enum ParseState
     H_END_LF
 };
 
+enum APIpath
+{
+    daylist_login,
+    daylist_register
+};
+
 class HttpData
 {
 private:
     int fd_;
     bool error_;
-    HttpMethod method_;
+
+    static std::map<std::string, APIpath> hash_;
+
     std::string url_;
+    HttpMethod method_;
     HttpVersion HTTPVersion_;
+    ProcessState state_;
+    ParseState hState_;
+    
     std::map<std::string, std::string> headers_;
     std::map<std::string, std::string> bodies;
     std::string inBuffer_;
     std::string outBuffer_;
     int nowReadPos_;
-
-    void loadHeaders(int beginPos);
-    int get_line(char* buf, int size);
     
     URIState parseLine();
-    ProcessState state_;
-    ParseState hState_;
     HeaderState parseHeader();
+    int parseBody();
     AnalysisState analysisRequest();
 
     void handleError(int err_num, std::string short_msg);
     void handleRead();
     void handleWrite();
-    int parseBody();
+    
 public:
     void startup();
     HttpData(int fd);
