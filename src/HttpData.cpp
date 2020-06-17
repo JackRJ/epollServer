@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-17 17:30:20
+ * @LastEditTime: 2020-06-17 17:37:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -384,7 +384,17 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"error\"}";
                 return ANALYSIS_SUCCESS;
                 break;
-            case daylist_register : break;
+            case daylist_register : 
+                this -> parseBody();
+                int res = registeAPI(bodies);
+                if (res == 1)
+                    outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"registe\":\"success\"}";
+                else if (res == -1) 
+                    return ANALYSIS_ERROR;
+                else 
+                    outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"registe\":\"fail\"}";
+                return ANALYSIS_SUCCESS;
+                break;
             default : break;
         }
         /*if (url_ == "login")

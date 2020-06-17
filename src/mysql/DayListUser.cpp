@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-17 16:29:24
+ * @LastEditTime: 2020-06-17 17:34:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -33,10 +33,10 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
     return 0;*/
     if (!bodies.count("account") || !bodies.count("cipher"))
     {
-        printf("params error\n");
+        printf("mysql params error\n");
         return 0;
     }
-    printf("params success\n");
+    printf("mysql params success\n");
     std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
     int res = mysql_query(&conn, str.c_str());
     if (res)
@@ -57,7 +57,7 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
     return 0;
 }
 
-int DayListUser::registe(std::string account, std::string cipher)
+int DayListUser::registe(std::string& account, std::string& cipher)
 {
     // to do 查重
     std::string str = "select * from User where account = '" + account + "'";
