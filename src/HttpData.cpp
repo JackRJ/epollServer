@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-17 16:55:03
+ * @LastEditTime: 2020-06-17 17:30:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -34,7 +34,7 @@ HttpData::HttpData(int fd):
 HttpData::~HttpData()
 {
     // test http 1.0 
-    if (HTTPVersion_ == 1 || error_)
+    // if (HTTPVersion_ == 1 || error_)
         close(fd_); 
 }
 
