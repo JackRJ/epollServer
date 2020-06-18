@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-17 17:43:50
+ * @LastEditTime: 2020-06-18 10:25:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -376,60 +376,40 @@ AnalysisState HttpData::analysisRequest()
         header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
         switch (hash_[url_])
         {
+            /**
+             * 登陆
+             */
             case daylist_login : 
+            {
                 this -> parseBody();
-                if (loginAPI(bodies) == 1)
-                    outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"success\"}";
+                int res = loginAPI(bodies);
+                if (res == 1)
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
+                else if (res == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong cipher\"}";
                 else 
-                    outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"error\"}";
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
                 break;
+            }
+            /**
+             * 注册
+             */
             case daylist_register : 
             {
                 this -> parseBody();
                 int rst = registeAPI(bodies);
                 if (rst == 1)
-                    outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"registe\":\"success\"}";
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"registe success\"}";
                 else if (rst == -1) 
-                    return ANALYSIS_ERROR;
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account exited\"}";
                 else 
-                    outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"registe\":\"fail\"}";
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
                 break;
             }
             default: return ANALYSIS_ERROR;
         }
-        /*if (url_ == "login")
-        {
-            this -> parseBody();
-            /*printf("bodies:%i\n", bodies.size());
-            for (auto h : bodies)
-            {
-                printf("%s : %s\n", h.first.c_str(), h.second.c_str());
-            }
-            std::shared_ptr<DayListUser> user(new DayListUser());
-            if (user -> login(bodies) == 1)
-            {
-                outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"success\"}";
-            } else 
-            {
-                outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"error\"}";
-            }
-            return ANALYSIS_SUCCESS;
-        } else if (url_ == "register")
-        {
-            this -> parseBody();
-            if (!bodies.count("account") || !bodies.count("cipher"))
-                return ANALYSIS_ERROR;
-            std::string account = bodies["account"];
-            std::string cipher = bodies["cipher"];
-            std::shared_ptr<DayListUser> user(new DayListUser());
-            if (user -> registe(account, cipher) == 1)
-                outBuffer_ = header + "{\"res\":\"1\",\"msg\":\"registe\":\"success\"}";
-            else 
-                outBuffer_ = header + "{\"res\":\"0\",\"msg\":\"registe\":\"fail\"}";
-            return ANALYSIS_SUCCESS;
-        }*/
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {
         std::string header;
@@ -440,7 +420,7 @@ AnalysisState HttpData::analysisRequest()
         {
             printf("fileName: %s\n", url_.c_str());
             std::string c = std::string(100, '6');
-            std::string str = "{res : 1, msg : success}\r\n" + c + "\r\n";
+            std::string str = "{result : 1, msg : success}\r\n" + c + "\r\n";
             outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\n" + str;
             return ANALYSIS_SUCCESS;
         }

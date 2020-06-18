@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-17 17:34:37
+ * @LastEditTime: 2020-06-18 10:21:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -25,6 +25,9 @@ DayListUser::~DayListUser()
         mysql_close(&conn);
 }
 
+/**
+ * 登陆函数
+ */
 int DayListUser::login(std::map<std::string, std::string>& bodies)
 {
     /*if (!connected)
@@ -54,9 +57,12 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
     if (bodies["cipher"] == std::string(row[0]))
         return 1;
     printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
-    return 0;
+    return -1;
 }
 
+/**
+ * 注册函数
+ */
 int DayListUser::registe(std::string& account, std::string& cipher)
 {
     // to do 查重
@@ -72,7 +78,7 @@ int DayListUser::registe(std::string& account, std::string& cipher)
     if (rowcount != 0)
     {
         printf("account exited\n");
-        return 0;
+        return -1;
     }
     
     str = "insert into User (name, sex, age, cipher, account) values ('***', 0, 20, '" 
