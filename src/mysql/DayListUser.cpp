@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-19 15:48:41
+ * @LastEditTime: 2020-06-19 16:13:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -112,8 +112,8 @@ int DayListUser::uploadItem(std::map<std::string, std::string>& item)
     std::string remarks = item.count("remarks") ? item["remarks"] : "";
     std::string location = item.count("location") ? item["location"] : "";
 
-    std::string str = "insert into schedule (userId, isAlarm, advancedAlarmMintes, describtion, \
-    remarks, startTime, endTime, location) values (" + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
+    std::string str = "insert into schedule (userId, isAlarm, advancedAlarmMintes, describtion, remarks, startTime, endTime, location) values ("
+    + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
     // 2, 1, 20, 'daylist', 'important', '2020-06-19 13:48:03', '2020-06-20 13:48:03', 'guangdong');";
 
