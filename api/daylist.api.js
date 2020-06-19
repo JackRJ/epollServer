@@ -1,18 +1,36 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-18 10:25:32
+ * @LastEditTime: 2020-06-19 15:51:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
  */ 
+
+/**
+ * 用户信息
+ */
 export const UserItem = 
 {
+    id: Number,
     name: String,
     sex: Number, // 1：女 0：男
     age: Number,
     account: String,
     cipher: String
+}
+
+export const ScheduleItem = 
+{
+    scheduleId: Number,
+    userId: Number,
+    isAlarm: Number, // 1: 是 0：否
+    advancedAlarmMintes: Number, // 提前多少分钟提醒
+    startTime: String, // Timestamp eg:2020-05-20 00:00:00
+    endTime: String,
+    location: String,
+    describtion: String,
+    remarks: String,
 }
 
 export const url = 'http://119.23.174.48:8006/';

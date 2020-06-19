@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-18 10:21:01
+ * @LastEditTime: 2020-06-19 15:48:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -84,6 +84,40 @@ int DayListUser::registe(std::string& account, std::string& cipher)
     str = "insert into User (name, sex, age, cipher, account) values ('***', 0, 20, '" 
             + cipher + "','" + account + "');";
     res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    my_ulonglong affected_row = mysql_affected_rows(&conn);
+    printf("%d rows affected.\n", (int)affected_row);
+    return 1;
+}
+
+/**
+ * 上传日程
+ */
+int DayListUser::uploadItem(std::map<std::string, std::string>& item)
+{
+    if (!item.count("userId") || !item.count("startTime") || !item.count("endTime") || !item.count("describtion"))
+        return 0;
+    if (item.count("isAlarm") && !item.count("advancedAlarmMintes"))
+        return 0;
+    std::string isAlarm = item.count("isAlarm") ? "1" : "0";
+    std::string& userId = item["userId"];
+    std::string& startTime = item["startTime"];
+    std::string& endTime = item["endTime"];
+    std::string& describtion = item["describtion"];
+    std::string advancedAlarmMintes = item.count("isAlarm") ? item["advancedAlarmMintes"] : "";
+    std::string remarks = item.count("remarks") ? item["remarks"] : "";
+    std::string location = item.count("location") ? item["location"] : "";
+
+    std::string str = "insert into schedule (userId, isAlarm, advancedAlarmMintes, describtion, \
+    remarks, startTime, endTime, location) values (" + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
+    + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
+    // 2, 1, 20, 'daylist', 'important', '2020-06-19 13:48:03', '2020-06-20 13:48:03', 'guangdong');";
+
+    int res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
