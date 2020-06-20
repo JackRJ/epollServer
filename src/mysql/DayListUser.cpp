@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 19:56:17
+ * @LastEditTime: 2020-06-20 19:58:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -147,6 +147,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
 
 int DayListUser::convert(char *inbuf,int inlen,char *outbuf,int outlen) {
     iconv_t cd;
+    cd = iconv_open("gb2312","utf-8");
     char **pin = &inbuf;
     char **pout = &outbuf;
 
