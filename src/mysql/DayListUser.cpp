@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 18:24:46
+ * @LastEditTime: 2020-06-20 18:49:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -117,22 +117,22 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
 
-    char* utfchar = new char[1024];
+    /*char* utfchar = new char[1024];
     if (gbk2utf8(utfchar, str.c_str(), 1024) == -1)
     {
         printf("gbk error.\n");
         delete[] utfchar;
         return 0;
-    }
-    printf("%s\n", utfchar);
+    }*/
+    printf("%s\n", str.c_str());
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
-        delete[] utfchar;
+        //delete[] utfchar;
         return 0;
     }
-    delete[] utfchar;
+    //delete[] utfchar;
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
     return 1;
