@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 10:14:21
+ * @LastEditTime: 2020-06-20 10:53:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -117,14 +117,70 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
 
-    printf("%s\n", str.c_str());
+    char* utfchar = new char[1024];
+    if (gbk2utf8(utfchar, str.c_str(), 1024) == -1)
+    {
+        printf("gbk error.\n");
+        delete[] utfchar;
+        return 0;
+    }
+    printf("%s\n", utfchar);
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
+        delete[] utfchar;
         return 0;
     }
+    delete[] utfchar;
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
     return 1;
+}
+
+int DayListUser::gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen)
+{
+    if(NULL==srcStr)
+    {
+        printf("Bad Parameter\n");
+        return -1;
+    }
+ 
+    //首先先将gbk编码转换为unicode编码
+    if(NULL==setlocale(LC_ALL,"zh_CN.gbk"))//设置转换为unicode前的码,当前为gbk编码
+    {
+        printf("Bad Parameter\n");
+        return -1;
+    }
+ 
+    int unicodeLen=mbstowcs(NULL,srcStr,0);//计算转换后的长度
+    if(unicodeLen<=0)
+    {
+        printf("Can not Transfer!!!\n");
+        return -1;
+    }
+    wchar_t *unicodeStr=(wchar_t *)calloc(sizeof(wchar_t),unicodeLen+1);
+    mbstowcs(unicodeStr,srcStr, strlen(srcStr));//将gbk转换为unicode
+    
+    //将unicode编码转换为utf8编码
+    if(NULL==setlocale(LC_ALL,"zh_CN.utf8"))//设置unicode转换后的码,当前为utf8
+    {
+        printf("Bad Parameter\n");
+        return -1;
+    }
+    int utfLen=wcstombs(NULL,unicodeStr,0);//计算转换后的长度
+    if(utfLen<=0)
+    {
+        printf("Can not Transfer!!!\n");
+        return -1;
+    }
+    else if(utfLen>=maxUtfStrlen)//判断空间是否足够
+    {
+        printf("Dst Str memory not enough\n");
+        return -1;
+    }
+    wcstombs(utfStr,unicodeStr,utfLen);
+    utfStr[utfLen]=0;//添加结束符
+    free(unicodeStr);
+    return utfLen;
 }
