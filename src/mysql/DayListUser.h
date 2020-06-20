@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-20 10:49:52
+ * @LastEditTime: 2020-06-20 19:46:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -9,6 +9,7 @@
 #pragma once
 #include <mysql/mysql.h>
 #include <stdio.h>
+#include <iconv.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <string>
@@ -26,6 +27,7 @@ private:
     MYSQL_FIELD *field = NULL;
 
     int gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen);
+    int convert(char *inbuf,int inlen,char *outbuf,int outlen);
 public:
     // 用户
     int login(std::map<std::string, std::string>& bodies);
