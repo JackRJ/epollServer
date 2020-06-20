@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 10:53:44
+ * @LastEditTime: 2020-06-20 18:24:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -145,14 +145,14 @@ int DayListUser::gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen)
         printf("Bad Parameter\n");
         return -1;
     }
- 
+    printf("str not NULL\n");
     //首先先将gbk编码转换为unicode编码
     if(NULL==setlocale(LC_ALL,"zh_CN.gbk"))//设置转换为unicode前的码,当前为gbk编码
     {
         printf("Bad Parameter\n");
         return -1;
     }
- 
+    printf("gbk not null\n");
     int unicodeLen=mbstowcs(NULL,srcStr,0);//计算转换后的长度
     if(unicodeLen<=0)
     {
@@ -168,6 +168,7 @@ int DayListUser::gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen)
         printf("Bad Parameter\n");
         return -1;
     }
+    printf("utf8 not null\n");
     int utfLen=wcstombs(NULL,unicodeStr,0);//计算转换后的长度
     if(utfLen<=0)
     {
