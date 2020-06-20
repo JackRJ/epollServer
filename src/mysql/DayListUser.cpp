@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-19 16:13:12
+ * @LastEditTime: 2020-06-20 09:38:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -16,6 +16,7 @@ DayListUser::DayListUser():
     auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
     if (tmp)
         connected = 1;
+    mysql_set_character_set(&conn, "utf8");
 }
 
 DayListUser::~DayListUser()
