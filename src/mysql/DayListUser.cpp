@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 20:11:10
+ * @LastEditTime: 2020-06-20 20:51:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -124,7 +124,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
         delete[] utfchar;
         return 0;
     }*/
-    printf("%i\n", str.size());
+    /*printf("%i\n", str.size());
     char* buf = new char[1024];
     str.copy(buf, str.size(), 0);
     *(buf + str.size()) = '\0';
@@ -132,7 +132,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     printf("%i\n", str.size());
     convert(buf, str.size(), outbuf, str.size());
     printf("%s\n", str.c_str());
-    printf("%s\n", outbuf);
+    printf("%s\n", outbuf);*/
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
@@ -148,7 +148,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
 
 int DayListUser::convert(char *inbuf,int inlen,char *outbuf,int outlen) {
     iconv_t cd;
-    cd = iconv_open("gbk","utf-8");
+    cd = iconv_open("utf-8","gbk");
     char **pin = &inbuf;
     char **pout = &outbuf;
 
