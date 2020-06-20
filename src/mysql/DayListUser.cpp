@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 19:55:11
+ * @LastEditTime: 2020-06-20 19:56:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -130,7 +130,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     *(buf + str.size()) = '\0';
     char* outbuf = new char[1024];
     printf("%i\n", str.size());
-    convert(buf, strlen(str.c_str()), outbuf, 1024);
+    convert(buf, str.size(), outbuf, str.size());
     printf("%s\n", str.c_str());
     int res = mysql_query(&conn, str.c_str());
     if (res)
