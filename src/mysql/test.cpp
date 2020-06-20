@@ -26,6 +26,6 @@ int main()
     mym["advancedAlarmMintes"] = "30";
     mym["remarks"] = "日程";
     mym["location"] = "揭阳";
-    int res = daylist.uploadItem(mym);
+    int res = daylist.uploadScheduleItem(mym);
     printf("%i\n", res);
 }

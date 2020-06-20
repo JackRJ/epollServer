@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-17 16:52:19
+ * @LastEditTime: 2020-06-20 09:44:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -75,7 +75,8 @@ enum ParseState
 enum APIpath
 {
     daylist_login,
-    daylist_register
+    daylist_register,
+    daylist_uploadScheduleItem
 };
 
 class HttpData

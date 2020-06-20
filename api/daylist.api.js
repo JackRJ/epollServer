@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-19 15:51:49
+ * @LastEditTime: 2020-06-20 09:53:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -58,6 +58,20 @@ class UserAPI
     {
         method: 'POST',
         req: [account, cipher],
+        res: 
+        {
+            result: String,
+            msg: String
+        }
+    }
+
+    /**
+     * 用户上传日程
+     */
+    'daylist/uploadScheduleItem' = 
+    {
+        method: 'POST',
+        req: [ScheduleItem],
         res: 
         {
             result: String,

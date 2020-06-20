@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-18 10:25:46
+ * @LastEditTime: 2020-06-20 09:52:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -18,7 +18,8 @@
 std::map<std::string, APIpath> HttpData::hash_ = 
     {
         std::make_pair("daylist/login", daylist_login),
-        std::make_pair("daylist/register", daylist_register)
+        std::make_pair("daylist/register", daylist_register),
+        std::make_pair("daylist/uploadScheduleItem", daylist_uploadScheduleItem)
     };
 
 HttpData::HttpData(int fd):
@@ -403,6 +404,19 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"registe success\"}";
                 else if (rst == -1) 
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account exited\"}";
+                else 
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                return ANALYSIS_SUCCESS;
+                break;
+            }
+            case daylist_uploadScheduleItem:
+            {
+                this -> parseBody();
+                int rst = uploadScheduleItemAPI(bodies);
+                if (rst == 1)
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"upload success\"}";
+                else if (rst == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
                 else 
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
