@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-20 09:52:37
+ * @LastEditTime: 2020-06-20 18:55:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -345,6 +345,7 @@ int HttpData::parseBody()
 {
     bool error = 0;
     std::string& str = inBuffer_;
+    printf("inbuff : %s\n", str.c_str());
     int key_start = 0, key_end = 0;
     int val_start = 0;
     int i = 0;
