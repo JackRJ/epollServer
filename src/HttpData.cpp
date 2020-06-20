@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-20 18:55:02
+ * @LastEditTime: 2020-06-20 18:56:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -49,6 +49,7 @@ void HttpData::handleRead()
 {
     bool zero = false;
     int readNum = readn(fd_, inBuffer_, zero);
+    printf("read : %s\n", inBuffer_.c_str());
     do
     {
         if (readNum < 0)
