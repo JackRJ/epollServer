@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-21 17:11:07
+ * @LastEditTime: 2020-06-21 17:14:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -152,6 +152,12 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         more = '0';
     int fieldcount = mysql_num_fields(result);
     MYSQL_ROW row = mysql_fetch_row(result);
+    for(int i = 0; i < fieldcount; i++)
+    {
+        field = mysql_fetch_field_direct(result,i);
+        printf("%s  ", field->name);
+    }
+    printf("\n");
     while (row != NULL)
     {
         items += "{";
