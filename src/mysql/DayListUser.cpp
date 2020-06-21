@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-21 16:54:58
+ * @LastEditTime: 2020-06-21 17:11:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -132,7 +132,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
  * 获取用户日程，每次10条
  * @params:userId, page
  */
-int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::string& items)
+int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more)
 {
     std::string userId = urlData["userId"];
     std::string page = urlData["page"];
@@ -146,16 +146,25 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
     }
     result = mysql_store_result(&conn);
     int rowcount = mysql_num_rows(result);
+    if (rowcount == 10)
+        more = '1';
+    else 
+        more = '0';
     int fieldcount = mysql_num_fields(result);
     MYSQL_ROW row = mysql_fetch_row(result);
     while (row != NULL)
     {
+        items += "{";
         for(int i=0; i < fieldcount; i++)
         {
+            items += row[i];
+            items += ",";
             printf("%s     ", row[i]);
         }
-        printf("\n");
+        items.pop_back();
+        items += "},";
         row = mysql_fetch_row(result);
     }
+    items.pop_back();
     return 1;
 }

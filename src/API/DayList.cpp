@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-21 16:52:14
+ * @LastEditTime: 2020-06-21 17:06:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -50,10 +50,10 @@ int uploadScheduleItemAPI(std::map<std::string, std::string>& bodies)
  * 获取用户日程，每次10条
  * @params:userId, page
  */
-int getUserItem(std::map<std::string, std::string>& urlData, std::string& items)
+int getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more)
 {
     if (!urlData.count("userId") || !urlData.count("page"))
         return -1;
     std::shared_ptr<DayListUser> user(new DayListUser());
-    return user -> getUserItem(urlData, items);
+    return user -> getUserItem(urlData, items, more);
 }

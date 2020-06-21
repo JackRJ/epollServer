@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-21 16:36:44
+ * @LastEditTime: 2020-06-21 17:06:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -33,7 +33,7 @@ public:
 
     // 日程表
     int uploadScheduleItem(std::map<std::string, std::string>& item);
-    int getUserItem(std::map<std::string, std::string>& urlData, std::string& items);
+    int getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more);
 
     DayListUser();
     ~DayListUser();
