@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-21 09:03:59
+ * @LastEditTime: 2020-06-21 16:54:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -125,5 +125,37 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     }
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
+    return 1;
+}
+
+/**
+ * 获取用户日程，每次10条
+ * @params:userId, page
+ */
+int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::string& items)
+{
+    std::string userId = urlData["userId"];
+    std::string page = urlData["page"];
+    std::string str = "select * from schedule where userId = '" + userId + "' order by startTime desc limit "
+        + page + ",10;";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    int fieldcount = mysql_num_fields(result);
+    MYSQL_ROW row = mysql_fetch_row(result);
+    while (row != NULL)
+    {
+        for(int i=0; i < fieldcount; i++)
+        {
+            printf("%s     ", row[i]);
+        }
+        printf("\n");
+        row = mysql_fetch_row(result);
+    }
     return 1;
 }

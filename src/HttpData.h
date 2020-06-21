@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-21 11:22:20
+ * @LastEditTime: 2020-06-21 15:25:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -77,7 +77,8 @@ enum APIpath
 {
     daylist_login,
     daylist_register,
-    daylist_uploadScheduleItem
+    daylist_uploadScheduleItem,
+    daylist_getUserItems
 };
 
 class HttpData
@@ -96,6 +97,7 @@ private:
     
     std::map<std::string, std::string> headers_;
     std::map<std::string, std::string> bodies;
+    std::map<std::string, std::string> urlData;
     std::string inBuffer_;
     std::string outBuffer_;
     int nowReadPos_;
@@ -103,6 +105,7 @@ private:
     URIState parseLine();
     HeaderState parseHeader();
     int parseBody();
+    int parseUrlData(int pos);
     AnalysisState analysisRequest();
 
     void handleError(int err_num, std::string short_msg);

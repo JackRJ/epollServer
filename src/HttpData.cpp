@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-21 11:31:15
+ * @LastEditTime: 2020-06-21 16:17:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -19,7 +19,8 @@ std::map<std::string, APIpath> HttpData::hash_ =
     {
         std::make_pair("daylist/login", daylist_login),
         std::make_pair("daylist/register", daylist_register),
-        std::make_pair("daylist/uploadScheduleItem", daylist_uploadScheduleItem)
+        std::make_pair("daylist/uploadScheduleItem", daylist_uploadScheduleItem),
+        std::make_pair("daylist/getUserItems", daylist_getUserItems)
     };
 
 HttpData::HttpData(int fd):
@@ -147,6 +148,30 @@ void HttpData::handleWrite()
     }
 }
 
+int HttpData::parseUrlData(int pos)
+{
+    std::string data = url_.substr(pos);
+    int start = 0;
+    int end = data.size();
+    while (start < end)
+    {
+        std::string key;
+        std::string val;
+        int index = start;
+        while (index < end && data[index] != '=')
+            ++index;
+        key = std::string(data.begin() + start, data.begin() + index);
+        ++index;
+        start = index;
+        while (index < end && data[index] != '&')
+            ++index;
+        val = std::string(data.begin() + start, data.begin() + index);
+        start = ++index;
+        urlData[key] = val;
+        printf("%s, %s\n", key.c_str(), val.c_str());
+    }
+}
+
 URIState HttpData::parseLine()
 {
     // solve method url and httpversion
@@ -204,6 +229,12 @@ URIState HttpData::parseLine()
             {
                 url_ = request_line.substr(pos + 1, _pos - pos - 1);
                 size_t __pos = url_.find('?');
+                // 有参数需要处理
+                if (__pos != url_.npos)
+                {
+                    printf("%s\n", url_.substr(__pos + 1).c_str());
+                    this -> parseUrlData(__pos + 1);
+                }
                 // params to do 
                 if (__pos >= 0)
                     url_ = url_.substr(0, __pos);
@@ -416,11 +447,12 @@ AnalysisState HttpData::analysisRequest()
              */
             case daylist_uploadScheduleItem:
             {
+                // 对中文的url解码
                 std::shared_ptr<UrlTranslation> translation(new UrlTranslation());
                 std::shared_ptr<char> tmp(new char[inBuffer_.size() + 1]);
                 translation -> urlDecode(inBuffer_.data(), tmp.get());
                 inBuffer_ = std::string(tmp.get());
-                printf("%s\n", inBuffer_.c_str());
+                // 之后再进行解析请求体
                 this -> parseBody();
                 int rst = uploadScheduleItemAPI(bodies);
                 if (rst == 1)
@@ -437,8 +469,30 @@ AnalysisState HttpData::analysisRequest()
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {
         std::string header;
-        header += "HTTP/1.1 200 OK\r\n";
+        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
 
+        switch(hash_[url_])
+        {
+            /**
+             * 获取某个用户的所有日程,每次获取10条
+             */
+            case daylist_getUserItems:
+            {
+                std::string items;
+                int res = getUserItem(urlData, items);
+                if (res == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
+                else if (res == 0)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                else if (res == 1)
+                {
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"more\":1,\"scheduleItems\":[{}, {}]}";
+                } else 
+                    break;
+                return ANALYSIS_SUCCESS;
+            }
+            default: break;
+        }
         // test
         if (url_ == "hello")
         {
