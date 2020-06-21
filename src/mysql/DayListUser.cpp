@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-21 17:14:12
+ * @LastEditTime: 2020-06-21 17:22:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -134,17 +134,21 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
  */
 int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more)
 {
+    // 获取参数
     std::string userId = urlData["userId"];
     std::string page = urlData["page"];
     std::string str = "select * from schedule where userId = '" + userId + "' order by startTime desc limit "
         + page + ",10;";
+    // 查询数据库
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
         return 0;
     }
+    // 获取结果
     result = mysql_store_result(&conn);
+    // 获取item数目
     int rowcount = mysql_num_rows(result);
     if (rowcount == 10)
         more = '1';
@@ -152,18 +156,22 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         more = '0';
     int fieldcount = mysql_num_fields(result);
     MYSQL_ROW row = mysql_fetch_row(result);
-    for(int i = 0; i < fieldcount; i++)
+    // 获取字段
+    std::vector<std::string> vec(fieldcount);
+    for(int i = 1; i < fieldcount; i++)
     {
         field = mysql_fetch_field_direct(result,i);
-        printf("%s  ", field->name);
+        vec[i] = field -> name;
     }
     printf("\n");
     while (row != NULL)
     {
         items += "{";
-        for(int i=0; i < fieldcount; i++)
+        for(int i = 1; i < fieldcount; i++)
         {
-            items += row[i];
+            field = mysql_fetch_field_direct(result,i);
+            items += ("'" + vec[i] + "':");
+            items += ("'" + row[i] + "'");
             items += ",";
             printf("%s     ", row[i]);
         }

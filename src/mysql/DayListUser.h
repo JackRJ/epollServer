@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-21 17:06:58
+ * @LastEditTime: 2020-06-21 17:20:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -16,6 +16,7 @@
 #include <string.h>
 #include <memory>
 #include <map>
+#include <vector>
 
 class DayListUser
 {
