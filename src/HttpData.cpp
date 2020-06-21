@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-20 18:56:46
+ * @LastEditTime: 2020-06-21 11:31:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -411,8 +411,16 @@ AnalysisState HttpData::analysisRequest()
                 return ANALYSIS_SUCCESS;
                 break;
             }
+            /**
+             * 上传日程item
+             */
             case daylist_uploadScheduleItem:
             {
+                std::shared_ptr<UrlTranslation> translation(new UrlTranslation());
+                std::shared_ptr<char> tmp(new char[inBuffer_.size() + 1]);
+                translation -> urlDecode(inBuffer_.data(), tmp.get());
+                inBuffer_ = std::string(tmp.get());
+                printf("%s\n", inBuffer_.c_str());
                 this -> parseBody();
                 int rst = uploadScheduleItemAPI(bodies);
                 if (rst == 1)

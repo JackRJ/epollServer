@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-20 19:46:42
+ * @LastEditTime: 2020-06-21 09:04:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -26,8 +26,6 @@ private:
     MYSQL_RES *result = NULL;
     MYSQL_FIELD *field = NULL;
 
-    int gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen);
-    int convert(char *inbuf,int inlen,char *outbuf,int outlen);
 public:
     // 用户
     int login(std::map<std::string, std::string>& bodies);

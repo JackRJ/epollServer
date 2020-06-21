@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-20 20:51:20
+ * @LastEditTime: 2020-06-21 09:03:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -117,91 +117,13 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
 
-    /*char* utfchar = new char[1024];
-    if (gbk2utf8(utfchar, str.c_str(), 1024) == -1)
-    {
-        printf("gbk error.\n");
-        delete[] utfchar;
-        return 0;
-    }*/
-    /*printf("%i\n", str.size());
-    char* buf = new char[1024];
-    str.copy(buf, str.size(), 0);
-    *(buf + str.size()) = '\0';
-    char* outbuf = new char[1024];
-    printf("%i\n", str.size());
-    convert(buf, str.size(), outbuf, str.size());
-    printf("%s\n", str.c_str());
-    printf("%s\n", outbuf);*/
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
-        //delete[] utfchar;
         return 0;
     }
-    //delete[] utfchar;
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
     return 1;
-}
-
-int DayListUser::convert(char *inbuf,int inlen,char *outbuf,int outlen) {
-    iconv_t cd;
-    cd = iconv_open("utf-8","gbk");
-    char **pin = &inbuf;
-    char **pout = &outbuf;
-
-    memset(outbuf,0,outlen);
-    auto res = iconv(cd,pin,(size_t *)&inlen,pout,(size_t *)&outlen);
-    iconv_close(cd);
-    return res;
-}
-
-int DayListUser::gbk2utf8(char *utfStr,const char *srcStr,int maxUtfStrlen)
-{
-    if(NULL==srcStr)
-    {
-        printf("Bad Parameter\n");
-        return -1;
-    }
-    printf("str not NULL\n");
-    //首先先将gbk编码转换为unicode编码
-    if(NULL==setlocale(LC_ALL,"zh_CN.gbk"))//设置转换为unicode前的码,当前为gbk编码
-    {
-        printf("Bad Parameter\n");
-        return -1;
-    }
-    printf("gbk not null\n");
-    int unicodeLen=mbstowcs(NULL,srcStr,0);//计算转换后的长度
-    if(unicodeLen<=0)
-    {
-        printf("Can not Transfer!!!\n");
-        return -1;
-    }
-    wchar_t *unicodeStr=(wchar_t *)calloc(sizeof(wchar_t),unicodeLen+1);
-    mbstowcs(unicodeStr,srcStr, strlen(srcStr));//将gbk转换为unicode
-    
-    //将unicode编码转换为utf8编码
-    if(NULL==setlocale(LC_ALL,"zh_CN.utf8"))//设置unicode转换后的码,当前为utf8
-    {
-        printf("Bad Parameter\n");
-        return -1;
-    }
-    printf("utf8 not null\n");
-    int utfLen=wcstombs(NULL,unicodeStr,0);//计算转换后的长度
-    if(utfLen<=0)
-    {
-        printf("Can not Transfer!!!\n");
-        return -1;
-    }
-    else if(utfLen>=maxUtfStrlen)//判断空间是否足够
-    {
-        printf("Dst Str memory not enough\n");
-        return -1;
-    }
-    wcstombs(utfStr,unicodeStr,utfLen);
-    utfStr[utfLen]=0;//添加结束符
-    free(unicodeStr);
-    return utfLen;
 }
