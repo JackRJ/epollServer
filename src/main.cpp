@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-05-18 21:40:15
+ * @LastEditTime: 2020-06-22 16:29:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -30,7 +30,7 @@ int main()
     int i, maxi, listenfd, connfd, sockfd,nfds;
     struct sockaddr_in clientaddr;
     // struct sockaddr_in serveraddr;
-    socklen_t clilen;
+    socklen_t clilen = sizeof(clientaddr);
 
     // 创建线程池 RAII
     std::shared_ptr<ThreadPool> threadPool(new ThreadPool());
