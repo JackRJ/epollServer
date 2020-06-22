@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-22 16:24:45
+ * @LastEditTime: 2020-06-22 16:26:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -57,8 +57,8 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
     }
     int id = 0;
     char* tmp = row[0];
-    printf("%i\n", strlen(tmp));
-    while (*tmp != '\0')
+    int count = strlen(tmp);
+    while (count--)
     {
         id = 10 * id + (*tmp - '0');
     }
