@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-22 17:00:26
+ * @LastEditTime: 2020-06-22 17:22:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -114,7 +114,7 @@ class UserAPI
     }
 
     /**
-     * 修改用户信息
+     * 修改用户信息 to do 
      */
     'daylist/modifyUserInformation' = 
     {

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-22 17:06:58
+ * @LastEditTime: 2020-06-22 17:53:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -375,8 +375,16 @@ HeaderState HttpData::parseHeader()
     return PARSE_HEADER_AGAIN;
 }
 
-int HttpData::parseBody()
+int HttpData::parseBody(bool isDecode)
 {
+    if (isDecode)
+    {
+        // 对中文的url解码
+        std::shared_ptr<UrlTranslation> translation(new UrlTranslation());
+        std::shared_ptr<char> tmp(new char[inBuffer_.size() + 1]);
+        translation -> urlDecode(inBuffer_.data(), tmp.get());
+        inBuffer_ = std::string(tmp.get());
+    }
     bool error = 0;
     std::string& str = inBuffer_;
     printf("inbuff : %s\n", str.c_str());
@@ -417,7 +425,7 @@ AnalysisState HttpData::analysisRequest()
              */
             case daylist_login : 
             {
-                this -> parseBody();
+                this -> parseBody(0);
                 int UserId = 0;
                 int res = loginAPI(bodies, UserId);
                 if (res == 1)
@@ -435,7 +443,7 @@ AnalysisState HttpData::analysisRequest()
              */
             case daylist_register : 
             {
-                this -> parseBody();
+                this -> parseBody(0);
                 int rst = registeAPI(bodies);
                 if (rst == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"registe success\"}";
@@ -452,12 +460,8 @@ AnalysisState HttpData::analysisRequest()
             case daylist_uploadScheduleItem:
             {
                 // 对中文的url解码
-                std::shared_ptr<UrlTranslation> translation(new UrlTranslation());
-                std::shared_ptr<char> tmp(new char[inBuffer_.size() + 1]);
-                translation -> urlDecode(inBuffer_.data(), tmp.get());
-                inBuffer_ = std::string(tmp.get());
                 // 之后再进行解析请求体
-                this -> parseBody();
+                this -> parseBody(true);
                 int rst = uploadScheduleItemAPI(bodies);
                 if (rst == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"upload success\"}";
@@ -467,6 +471,32 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
                 break;
+            }
+            /**
+             * 修改用户信息
+             */
+            case daylist_modifyUserInformation:
+            {
+                // 对中文的url解码
+                // 之后再进行解析请求体
+                this -> parseBody(true);
+                if (bodies.empty())
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
+                else 
+                {
+                    int res = modifyUserInformation(bodies);
+                    if (res == -1)
+                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
+                    else if (res == 0)
+                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                    else if (res == 1)
+                        outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
+                    else if (res == -2)
+                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account not exicted\"}";
+                    else 
+                        break;
+                }
+                return ANALYSIS_SUCCESS;
             }
             default: return ANALYSIS_ERROR;
         }

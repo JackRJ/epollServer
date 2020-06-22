@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-22 17:10:37
+ * @LastEditTime: 2020-06-22 17:42:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -32,6 +32,7 @@ public:
     int login(std::map<std::string, std::string>& bodies, int& userId);
     int registe(std::string& account, std::string& cipher);
     int getUserInformation(const std::string& userId, std::string& userInformation);
+    int modifyUserInformation(std::map<std::string, std::string>& bodies);
 
     // 日程表
     int uploadScheduleItem(std::map<std::string, std::string>& item);

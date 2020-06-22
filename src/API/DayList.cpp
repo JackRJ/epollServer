@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-22 17:09:38
+ * @LastEditTime: 2020-06-22 17:54:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -101,4 +101,17 @@ int getUserInformation(std::map<std::string, std::string>& urlData, std::string&
     std::shared_ptr<DayListUser> user(new DayListUser());
     std::string userId = urlData["userId"];
     return user -> getUserInformation(userId, userInformation);
+}
+
+/**
+ * 修改用户信息
+ */
+int modifyUserInformation(std::map<std::string, std::string>& bodies)
+{
+    if (!bodies.count("userId"))
+        return -1;
+    if (bodies.size() < 2)
+        return -1;
+    std::shared_ptr<DayListUser> user(new DayListUser());
+    return user -> modifyUserInformation(bodies);
 }

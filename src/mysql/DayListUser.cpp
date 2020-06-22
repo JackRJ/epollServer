@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-22 17:21:05
+ * @LastEditTime: 2020-06-22 17:53:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -225,5 +225,48 @@ int DayListUser::getUserInformation(const std::string& userId, std::string& user
         userInformation += "\",";
     }
     userInformation.pop_back();
+    return 1;
+}
+
+/**
+ * 修改用户信息
+ */
+int DayListUser::modifyUserInformation(std::map<std::string, std::string>& bodies)
+{
+    const std::string userId = bodies["userId"];
+    // 查找用户是否存在
+    std::string str = "select * from User where id = " + userId + ";";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    if (rowcount == 0)
+    {
+        printf("account not excited\n");
+        return -2;
+    }
+
+    // 查询数据库用户信息
+    str =  "update User set ";
+    if (bodies.count("name"))
+        str += "name = '" + bodies["name"] + "' ";
+    if (bodies.count("sex"))
+        str += "sex = " + bodies["sex"] + " ";
+    if (bodies.count("age"))
+        str += "age = '" + bodies["age"] + "' ";
+    str += "where id = " + userId + ";";
+    // 修改数据库
+    res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    my_ulonglong affected_row = mysql_affected_rows(&conn);
+    printf("%d rows affected.\n", (int)affected_row);
     return 1;
 }

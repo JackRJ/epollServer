@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-22 17:05:22
+ * @LastEditTime: 2020-06-22 17:37:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -38,6 +38,6 @@ int getUserItem(std::map<std::string, std::string>& urlData, std::string& items,
 int getUserInformation(std::map<std::string, std::string>& urlData, std::string& userInformation);
 
 /**
- * 
+ * 修改用户信息
  */
-int modifyUserInformation();
+int modifyUserInformation(std::map<std::string, std::string>& bodies);

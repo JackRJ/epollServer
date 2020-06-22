@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-22 16:58:43
+ * @LastEditTime: 2020-06-22 17:32:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -106,7 +106,7 @@ private:
     
     URIState parseLine();
     HeaderState parseHeader();
-    int parseBody();
+    int parseBody(bool isDecode);
     int parseUrlData(int pos);
     AnalysisState analysisRequest();
 
