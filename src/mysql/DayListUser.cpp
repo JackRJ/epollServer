@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-21 17:24:52
+ * @LastEditTime: 2020-06-22 16:09:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -29,7 +29,7 @@ DayListUser::~DayListUser()
 /**
  * 登陆函数
  */
-int DayListUser::login(std::map<std::string, std::string>& bodies)
+int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
 {
     /*if (!connected)
         return -1;
@@ -41,7 +41,7 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
         return 0;
     }
     printf("mysql params success\n");
-    std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
+    std::string str = "select * from User where account = '" + bodies["account"] + "'";
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
@@ -55,8 +55,14 @@ int DayListUser::login(std::map<std::string, std::string>& bodies)
         printf("!row\n");
         return 0;
     }
-    if (bodies["cipher"] == std::string(row[0]))
+    int fieldcount = mysql_num_fields(result);
+    for (int i = 0; i < fieldcount; ++i)
+        printf("%s  ", row[i]);
+    printf("\n");
+    if (bodies["cipher"] == std::string(row[4]))
+    {
         return 1;
+    }
     printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
     return -1;
 }
@@ -163,6 +169,7 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         field = mysql_fetch_field_direct(result,i);
         vec[i] = field -> name;
     }
+    // 将个行处理为 json 格式数据
     while (row != NULL)
     {
         items += "{";

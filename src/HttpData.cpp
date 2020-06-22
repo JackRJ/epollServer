@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-21 17:09:02
+ * @LastEditTime: 2020-06-22 16:04:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -416,7 +416,8 @@ AnalysisState HttpData::analysisRequest()
             case daylist_login : 
             {
                 this -> parseBody();
-                int res = loginAPI(bodies);
+                int UserId = 0;
+                int res = loginAPI(bodies, UserId);
                 if (res == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
                 else if (res == -1)
@@ -438,7 +439,7 @@ AnalysisState HttpData::analysisRequest()
                 else if (rst == -1) 
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account exited\"}";
                 else 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again, maybe params error\"}";
                 return ANALYSIS_SUCCESS;
                 break;
             }

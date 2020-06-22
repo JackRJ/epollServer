@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-21 15:11:35
+ * @LastEditTime: 2020-06-22 16:02:41
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -12,7 +12,7 @@
  */
 export const UserItem = 
 {
-    id: Number,
+    // id: Number,
     name: String,
     sex: Number, // 1：女 0：男
     age: Number,
@@ -22,7 +22,7 @@ export const UserItem =
 
 export const ScheduleItem = 
 {
-    scheduleId: Number,
+    // scheduleId: Number,
     userId: Number,
     isAlarm: Number, // 1: 是 0：否
     advancedAlarmMintes: Number, // 提前多少分钟提醒
@@ -46,6 +46,7 @@ class UserAPI
         req: [account, cipher],
         res: 
         {
+            userId: Number,
             result: String,
             msg: String
         }
@@ -53,6 +54,8 @@ class UserAPI
 
     /**
      * 注册
+     * account: 10位数字
+     * cipher: 8位数字字母及以上，至20位
      */
     'daylist/register' = 
     {

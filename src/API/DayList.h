@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-21 17:06:32
+ * @LastEditTime: 2020-06-22 16:04:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -14,7 +14,7 @@
 /**
  * 用户登陆
  */
-int loginAPI(std::map<std::string, std::string>& bodies);
+int loginAPI(std::map<std::string, std::string>& bodies, int& userId);
 
 /**
  * 用户注册
