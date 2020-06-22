@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-22 16:14:28
+ * @LastEditTime: 2020-06-22 16:19:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -419,10 +419,10 @@ AnalysisState HttpData::analysisRequest()
                 int UserId = 0;
                 int res = loginAPI(bodies, UserId);
                 if (res == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
-                else if (res == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong cipher\",\"userId\":"
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"userId\":"
                         + std::to_string(UserId) +"}";
+                else if (res == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong cipher\"}";
                 else 
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
