@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-22 17:22:22
+ * @LastEditTime: 2020-06-22 17:56:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -119,7 +119,7 @@ class UserAPI
     'daylist/modifyUserInformation' = 
     {
         method: 'POST',
-        req: [userId],
+        req: [userId, (UserItem)], // userItem中需要修改的项目即可
         res: 
         {
             result: String,
