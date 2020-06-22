@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-22 18:00:42
+ * @LastEditTime: 2020-06-22 18:02:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -255,7 +255,7 @@ int DayListUser::modifyUserInformation(std::map<std::string, std::string>& bodie
     if (bodies.count("name"))
         str += "name = '" + bodies["name"] + "'";
     if (bodies.count("sex"))
-        str += ", sex = " + bodies["sex"];
+        str += ", sex = " + bodies["sex"] + " ";
     if (bodies.count("age"))
         str += ", age = '" + bodies["age"] + "' ";
     str += "where id = " + userId + ";";
