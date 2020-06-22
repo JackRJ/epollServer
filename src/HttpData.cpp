@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-22 16:19:00
+ * @LastEditTime: 2020-06-22 17:06:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -20,7 +20,9 @@ std::map<std::string, APIpath> HttpData::hash_ =
         std::make_pair("daylist/login", daylist_login),
         std::make_pair("daylist/register", daylist_register),
         std::make_pair("daylist/uploadScheduleItem", daylist_uploadScheduleItem),
-        std::make_pair("daylist/getUserItems", daylist_getUserItems)
+        std::make_pair("daylist/getUserItems", daylist_getUserItems),
+        std::make_pair("daylist/getUserInformation", daylist_getUserInformation),
+        std::make_pair("daylist/modifyUserInformation", daylist_modifyUserInformation)
     };
 
 HttpData::HttpData(int fd):
@@ -419,12 +421,12 @@ AnalysisState HttpData::analysisRequest()
                 int UserId = 0;
                 int res = loginAPI(bodies, UserId);
                 if (res == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"userId\":"
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
                         + std::to_string(UserId) +"}";
                 else if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong cipher\"}";
                 else 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"error, try again\"}";
                 return ANALYSIS_SUCCESS;
                 break;
             }
@@ -492,6 +494,24 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"more\":" + more
                         + ",\"scheduleItems\":[" + items + "]}";
                 } else 
+                    break;
+                return ANALYSIS_SUCCESS;
+            }
+            /**
+             * 获取用户信息
+             */
+            case daylist_getUserInformation:
+            {
+                std::string userInformation;
+                int res = getUserInformation(urlData, userInformation);
+                if (res == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
+                else if (res == 0)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                else if (res == 1)
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"userInformation\":"
+                    + userInformation + "}";
+                else 
                     break;
                 return ANALYSIS_SUCCESS;
             }

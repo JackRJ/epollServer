@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-22 16:04:46
+ * @LastEditTime: 2020-06-22 17:05:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -31,3 +31,13 @@ int uploadScheduleItemAPI(std::map<std::string, std::string>& bodies);
  */
 int getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more);
 
+
+/**
+ * 获取用户信息
+ */
+int getUserInformation(std::map<std::string, std::string>& urlData, std::string& userInformation);
+
+/**
+ * 
+ */
+int modifyUserInformation();

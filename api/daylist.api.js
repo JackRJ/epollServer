@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-22 16:02:41
+ * @LastEditTime: 2020-06-22 17:00:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -95,6 +95,35 @@ class UserAPI
             msg: String,
             more: Number, // 1: 是 2: 否
             scheduleItems: [ScheduleItem]
+        }
+    }
+
+    /**
+     * 获取用户信息
+     */
+    'daylist/getUserInformation' = 
+    {
+        method: 'GET',
+        req: [userId],
+        res: 
+        {
+            result: String,
+            msg: String,
+            userInformation: UserItem
+        }
+    }
+
+    /**
+     * 修改用户信息
+     */
+    'daylist/modifyUserInformation' = 
+    {
+        method: 'POST',
+        req: [userId],
+        res: 
+        {
+            result: String,
+            msg: String
         }
     }
 }
