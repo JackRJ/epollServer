@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-22 16:17:30
+ * @LastEditTime: 2020-06-22 16:24:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -55,9 +55,16 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
         printf("!row\n");
         return 0;
     }
+    int id = 0;
+    char* tmp = row[0];
+    printf("%i\n", strlen(tmp));
+    while (*tmp != '\0')
+    {
+        id = 10 * id + (*tmp - '0');
+    }
     if (bodies["cipher"] == std::string(row[4]))
     {
-        userId = *row[0] - '0';
+        userId = id;
         return 1;
     }
     printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);

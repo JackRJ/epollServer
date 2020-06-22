@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-22 16:05:05
+ * @LastEditTime: 2020-06-22 16:21:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -34,17 +34,17 @@ int registeAPI(std::map<std::string, std::string>& bodies)
 {
     std::shared_ptr<DayListUser> user(new DayListUser());
     if (!bodies.count("account") || !bodies.count("cipher"))
-        return -1;
+        return 0;
     // 验证账号密码长度是否符合要求
     int len = bodies["account"].size();
     if (len != 10 || (bodies["cipher"].size() < 8 || bodies["cipher"].size() > 20))
-        return -1;
+        return 0;
     int start = 0;
     // 验证账号是否由数字组成
     while (start < len)
     {
         if (!(bodies["account"][start] >= '0' || bodies["account"][start] <= '9'))
-            return -1;
+            return 0;
         ++start;
     }
     start = 0;
@@ -55,7 +55,7 @@ int registeAPI(std::map<std::string, std::string>& bodies)
         if (!((bodies["account"][start] >= '0' || bodies["account"][start] <= '9')
              || (bodies["account"][start] >= 'a' || bodies["account"][start] <= 'z')
              || (bodies["account"][start] >= 'A' || bodies["account"][start] <= 'Z')))
-            return -1;
+            return 0;
         ++start;
     }
     return user -> registe(bodies["account"], bodies["cipher"]);
