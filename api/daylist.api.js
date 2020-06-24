@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-22 17:56:10
+ * @LastEditTime: 2020-06-22 18:12:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -20,6 +20,9 @@ export const UserItem =
     cipher: String
 }
 
+/**
+ * 日程信息
+ */
 export const ScheduleItem = 
 {
     // scheduleId: Number,
@@ -114,12 +117,12 @@ class UserAPI
     }
 
     /**
-     * 修改用户信息 to do 
+     * 修改用户信息
      */
     'daylist/modifyUserInformation' = 
     {
         method: 'POST',
-        req: [userId, (UserItem)], // userItem中需要修改的项目即可
+        req: [userId, (UserItem)], // userItem中需要修改的项目即可，数目至少一个
         res: 
         {
             result: String,

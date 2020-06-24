@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-06-22 16:29:02
+ * @LastEditTime: 2020-06-24 17:15:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -16,6 +16,8 @@
 #include <sys/socket.h>
 #include <sys/epoll.h>
 #include <arpa/inet.h>
+
+#include "base/FileUtil.h"
 
 #define SERV_PORT 8006
 #define THREAD_NUMBERS 4
@@ -53,6 +55,11 @@ int main()
     epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &ev);
 
     maxi = 0;
+    {
+        AppendFile a("loger.txt");
+    a.append("textssssssssssssssssssss", 20);
+    }
+    
     while (1)
     {
         // 等待epoll事件的发生
