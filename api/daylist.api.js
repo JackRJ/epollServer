@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-22 18:12:01
+ * @LastEditTime: 2020-06-26 17:31:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -42,6 +42,7 @@ class UserAPI
 {
     /**
      * 登陆
+     * 再次或者注册后登陆时，可以带上 cookie（三天内有效），如 cookie 无效，则再判断账号密码、更新 cookie
      */
     'daylist/login' = 
     {

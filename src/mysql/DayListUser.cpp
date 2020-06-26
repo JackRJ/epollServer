@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 16:33:21
+ * @LastEditTime: 2020-06-26 17:21:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -314,5 +314,21 @@ int DayListUser::modifyUserInformation(std::map<std::string, std::string>& bodie
     }
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
+    return 1;
+}
+
+/**
+ * 更新cookie
+ */
+int DayListUser::updateCookie(int userId, const std::string& cid)
+{
+    std::string str = "update cookie set cid = " + cid + "' where id = " + std::to_string(userId) + ";";
+    // 更新数据库
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
     return 1;
 }

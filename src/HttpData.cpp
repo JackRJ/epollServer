@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-26 15:37:55
+ * @LastEditTime: 2020-06-26 17:31:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -417,7 +417,7 @@ AnalysisState HttpData::analysisRequest()
     if (method_ == METHOD_POST)
     {
         std::string header;
-        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
+        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n";
         printf("header cookid: %s\n", headers_["Cookie"].c_str());
         switch (hash_[url_])
         {
@@ -428,7 +428,8 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 int UserId = 0;
-                int res = loginAPI(headers_, bodies, UserId);
+                int res = loginAPI(headers_, bodies, UserId, header);
+                header += "\r\n";
                 if (res == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
                         + std::to_string(UserId) +"}";
