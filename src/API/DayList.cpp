@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:16:09
+ * @LastEditTime: 2020-06-26 18:22:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -35,7 +35,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             struct tm *last = new tm();
             time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
             cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
-            last -> tm_year = atoi(data.substr(0, 4).c_str());
+            last -> tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
             last -> tm_mon = atoi(data.substr(5, 2).c_str());
             last -> tm_mday = atoi(data.substr(8, 2).c_str());
             last -> tm_hour = atoi(data.substr(11, 2).c_str());
@@ -43,6 +43,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             last -> tm_sec = atoi(data.substr(17, 2).c_str());
             // 判断时间是否在三天之内
             double diff = difftime(mktime(last), mktime(cur));//转换结构体为time_t,利用difftime,计算时间差  
+            delete last;
             printf("diff : %d\n", diff);
             if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(4))
             {
