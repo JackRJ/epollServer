@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-06-24 17:15:21
+ * @LastEditTime: 2020-06-26 21:00:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -59,7 +59,7 @@ int main()
         AppendFile a("loger.txt");
     a.append("textssssssssssssssssssss", 20);
     }
-    
+    srand(time(0));
     while (1)
     {
         // 等待epoll事件的发生
