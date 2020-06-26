@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 21:33:44
+ * @LastEditTime: 2020-06-26 21:38:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -62,7 +62,7 @@ int DayListUser::deleteCookie(int userId)
     if (rowcount == 0)
         return -1;
     str = "delete from cookie where userId = " + std::to_string(userId) + ";";
-    int res = mysql_query(&conn, str.c_str());
+    res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
