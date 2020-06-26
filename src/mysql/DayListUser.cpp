@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 15:54:20
+ * @LastEditTime: 2020-06-26 15:56:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -44,7 +44,7 @@ int DayListUser::getUserId(const std::string& account)
     char* tmp = row[0];
     int len = strlen(tmp);
     while (len--)
-        userId = 10 * userId + (*(tmp++) - '0')
+        userId = 10 * userId + (*(tmp++) - '0');
     return userId;
 }
 
