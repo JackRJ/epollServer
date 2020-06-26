@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 16:12:03
+ * @LastEditTime: 2020-06-26 16:33:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -67,7 +67,7 @@ std::vector<std::string> DayListUser::getCookie(int userId)
     for (int i = 0; i < fieldcount; ++i)
     {
         printf("%s\n", row[i]);
-        ans[3] = std::string(row[i]);
+        ans[i] = std::string(row[i]);
     }
     return ans;
 }
