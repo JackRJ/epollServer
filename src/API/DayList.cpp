@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 16:30:55
+ * @LastEditTime: 2020-06-26 16:32:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -32,14 +32,9 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
             p = localtime(&timep);//用localtime将秒数转化为struct tm结构体
             printf("%d/%d/%d %02d:%02d:%02d\n", 1900 + p->tm_year, 1+ p->tm_mon, p->tm_mday,p->tm_hour, p->tm_min, p->tm_sec);
-            printf("%i : %i     \n", atoi(data.substr(0, 4).c_str()), (1900 + p->tm_year));
-            printf("%i : %i     \n", atoi(data.substr(5, 2).c_str()), 1+ p->tm_mon);
-            if (atoi(data.substr(0, 4).c_str()) == (1900 + p->tm_year))
-                printf("year\n");
-            if (atoi(data.substr(5, 2).c_str()) == 1+ p->tm_mon)
-                printf("month\n");
             if (vec[2] == headers_["Cookie"])
                 printf("cookie\n");
+            printf("cookie : %s\n", vec[2].c_str());
             if (atoi(data.substr(0, 4).c_str()) == (1900 + p->tm_year) && 
                 atoi(data.substr(5, 2).c_str()) == 1+ p->tm_mon && vec[2] == headers_["Cookie"])
                 return 1;
