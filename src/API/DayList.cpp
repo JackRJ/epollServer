@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 21:24:01
+ * @LastEditTime: 2020-06-26 21:31:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -49,7 +49,8 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
                 header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
                 userId = id;
                 return 1;
-            }
+            } else if (diff >= 86400 * 3)
+                user -> deleteCookie(id);
         }
     }
     if (!bodies.count("account") || !bodies.count("cipher"))

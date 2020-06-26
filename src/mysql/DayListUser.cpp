@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 21:13:28
+ * @LastEditTime: 2020-06-26 21:33:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -46,6 +46,29 @@ int DayListUser::getUserId(const std::string& account)
     while (len--)
         userId = 10 * userId + (*(tmp++) - '0');
     return userId;
+}
+
+int DayListUser::deleteCookie(int userId)
+{
+    std::string str = "select * from cookie where userId = " + std::to_string(userId) + ";";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    if (rowcount == 0)
+        return -1;
+    str = "delete from cookie where userId = " + std::to_string(userId) + ";";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    return 1;
 }
 
 std::vector<std::string> DayListUser::getCookie(int userId)
