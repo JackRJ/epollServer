@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:33:59
- * @LastEditTime: 2020-06-26 15:47:41
+ * @LastEditTime: 2020-06-26 16:04:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.h
@@ -29,6 +29,7 @@ private:
 
 public:
     int getUserId(const std::string& account);
+    std::vector<std::string> getCookie(int userId);
 
     // 用户
     int login(std::map<std::string, std::string>& bodies, int& userId);

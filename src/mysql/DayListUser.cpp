@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 15:56:54
+ * @LastEditTime: 2020-06-26 16:09:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -48,6 +48,30 @@ int DayListUser::getUserId(const std::string& account)
     return userId;
 }
 
+std::vector<std::string> DayListUser::getCookie(int userId)
+{
+    std::string str = "select * from cookie where userId = " + std::to_string(userId) + "';";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return {};
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    if (rowcount == 0)
+        return {};
+    MYSQL_ROW row = mysql_fetch_row(result);
+    int fieldcount = mysql_num_fields(result);
+    std::vector<std::string> ans(4);
+    for (int i = 0; i < fieldcount; ++i)
+    {
+        printf("%s\n", row[i]);
+        ans[3] = std::string(row[i]);
+    }
+    return ans;
+}
+
 /**
  * 登陆函数
  */
@@ -81,9 +105,7 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
     char* tmp = row[0];
     int count = strlen(tmp);
     while (count--)
-    {
-        id = 10 * id + (*tmp - '0');
-    }
+        id = 10 * id + (*(tmp++) - '0');
     if (bodies["cipher"] == std::string(row[4]))
     {
         userId = id;
