@@ -51,7 +51,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
                 return 1;
             } else if (diff >= 86400 * 3)
             {
-                printf("果期了\n");
                 user -> deleteCookie(id);
             }
                 
