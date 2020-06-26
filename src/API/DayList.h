@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-26 17:32:07
+ * @LastEditTime: 2020-06-26 21:20:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -22,7 +22,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
 /**
  * 用户注册
  */
-int registeAPI(map<string, string>& bodies);
+int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header);
 
 /**
  * 用户上传日程

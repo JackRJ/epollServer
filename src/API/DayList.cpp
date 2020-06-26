@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 21:15:12
+ * @LastEditTime: 2020-06-26 21:24:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -44,7 +44,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             // 判断时间是否在三天之内
             double diff = difftime(mktime(cur), mktime(&last));//转换结构体为time_t,利用difftime,计算时间差  
             auto pos = headers_["Cookie"].find(";");
-            printf("coookie: %s\n", headers_["Cookie"].substr(0, pos - 1).c_str());
             if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(0, pos))
             {
                 header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
@@ -75,7 +74,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
  * 用户注册
  * @params:account, cipher
  */
-int registeAPI(map<string, string>& bodies)
+int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header)
 {
     shared_ptr<DayListUser> user(new DayListUser());
     if (!bodies.count("account") || !bodies.count("cipher"))
@@ -103,7 +102,17 @@ int registeAPI(map<string, string>& bodies)
             return 0;
         ++start;
     }
-    return user -> registe(bodies["account"], bodies["cipher"]);
+    int ans = user -> registe(bodies["account"], bodies["cipher"]);
+    if (ans == 1)
+    {
+        int id = user -> getUserId(bodies["account"]);
+        if (id == -1)
+            return -1;
+        string cid = to_string(rand() % (100000000));
+        user -> updateCookie(id, cid);
+        header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
+    }
+    return ans;
 }
 
 /**

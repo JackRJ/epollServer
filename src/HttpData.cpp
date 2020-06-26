@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-26 17:49:32
+ * @LastEditTime: 2020-06-26 21:21:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -445,7 +445,8 @@ AnalysisState HttpData::analysisRequest()
             case daylist_register : 
             {
                 this -> parseBody(0);
-                int rst = registeAPI(bodies);
+                int rst = registeAPI(headers_, bodies, header);
+                header += "\r\n";
                 if (rst == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"registe success\"}";
                 else if (rst == -1) 
