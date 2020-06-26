@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 16:09:49
+ * @LastEditTime: 2020-06-26 16:12:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -50,7 +50,7 @@ int DayListUser::getUserId(const std::string& account)
 
 std::vector<std::string> DayListUser::getCookie(int userId)
 {
-    std::string str = "select * from cookie where userId = " + std::to_string(userId) + "';";
+    std::string str = "select * from cookie where userId = " + std::to_string(userId) + ";";
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
