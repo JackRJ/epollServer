@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 21:06:16
+ * @LastEditTime: 2020-06-26 21:15:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -45,7 +45,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             double diff = difftime(mktime(cur), mktime(&last));//转换结构体为time_t,利用difftime,计算时间差  
             auto pos = headers_["Cookie"].find(";");
             printf("coookie: %s\n", headers_["Cookie"].substr(0, pos - 1).c_str());
-            if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(0, pos - 1))
+            if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(0, pos))
             {
                 header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
                 userId = id;
