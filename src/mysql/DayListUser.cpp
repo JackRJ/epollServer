@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 21:12:46
+ * @LastEditTime: 2020-06-26 21:13:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -335,7 +335,7 @@ int DayListUser::updateCookie(int userId, const std::string& cid)
     // 没有记录
     if (rowcount == 0)
     {
-        std::string str = "insert into cookie (userId, cid) values (" 
+        str = "insert into cookie (userId, cid) values (" 
             + std::to_string(userId) 
             + ", '" + cid + "');";
         // 更新数据库
@@ -348,7 +348,7 @@ int DayListUser::updateCookie(int userId, const std::string& cid)
         return 1;
     }
     // 有记录，更新即可
-    std::string str = "update cookie set cid = '" + cid + "' where userId = " + std::to_string(userId) + ";";
+    str = "update cookie set cid = '" + cid + "' where userId = " + std::to_string(userId) + ";";
     // 更新数据库
     res = mysql_query(&conn, str.c_str());
     if (res)
