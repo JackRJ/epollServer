@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 17:42:09
+ * @LastEditTime: 2020-06-26 17:45:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -18,6 +18,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
     // 验证cookie是否正确
     if (headers_.count("Cookie") && bodies.count("account"))
     {
+        printf("have cookie\n");
         shared_ptr<DayListUser> user(new DayListUser());
         int id = user -> getUserId(bodies["account"]);
         if (id == -1)
