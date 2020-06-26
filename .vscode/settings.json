@@ -50,6 +50,7 @@
         "thread": "cpp",
         "typeinfo": "cpp",
         "map": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "cerrno": "cpp"
     }
 }

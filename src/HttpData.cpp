@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-26 15:35:25
+ * @LastEditTime: 2020-06-26 15:37:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -428,7 +428,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 int UserId = 0;
-                int res = loginAPI(bodies, UserId);
+                int res = loginAPI(headers_, bodies, UserId);
                 if (res == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
                         + std::to_string(UserId) +"}";

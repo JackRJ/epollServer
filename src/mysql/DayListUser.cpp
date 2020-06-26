@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-22 18:04:30
+ * @LastEditTime: 2020-06-26 15:54:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -24,6 +24,28 @@ DayListUser::~DayListUser()
     // 关闭数据库
     if (connected)
         mysql_close(&conn);
+}
+
+int DayListUser::getUserId(const std::string& account)
+{
+    int userId = 0;
+    std::string str = "select id from User where account = '" + account + "';";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return -1;
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    if (rowcount == 0)
+        return -1;
+    MYSQL_ROW row = mysql_fetch_row(result);
+    char* tmp = row[0];
+    int len = strlen(tmp);
+    while (len--)
+        userId = 10 * userId + (*(tmp++) - '0')
+    return userId;
 }
 
 /**

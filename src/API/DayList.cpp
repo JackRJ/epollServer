@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-22 17:54:38
+ * @LastEditTime: 2020-06-26 15:55:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -13,8 +13,15 @@
  * 用户登陆
  * @params:account, cipher
  */
-int loginAPI(std::map<std::string, std::string>& bodies, int& userId)
+int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId)
 {
+    // 验证cookie是否正确
+    if (headers_.count("Cookie") && bodies.count("account"))
+    {
+        shared_ptr<DayListUser> user(new DayListUser());
+        int userId = user -> getUserId(bodies["account"]);
+        printf("userId: %i\n", userId);
+    }
     if (!bodies.count("account") || !bodies.count("cipher"))
         return -1;
     // 验证账号密码长度是否符合要求
@@ -22,7 +29,7 @@ int loginAPI(std::map<std::string, std::string>& bodies, int& userId)
     if (len != 10 || (bodies["cipher"].size() < 8 || bodies["cipher"].size() > 20))
         return -1;
     
-    std::shared_ptr<DayListUser> user(new DayListUser());
+    shared_ptr<DayListUser> user(new DayListUser());
     return user -> login(bodies, userId);
 }
 
@@ -30,9 +37,9 @@ int loginAPI(std::map<std::string, std::string>& bodies, int& userId)
  * 用户注册
  * @params:account, cipher
  */
-int registeAPI(std::map<std::string, std::string>& bodies)
+int registeAPI(map<string, string>& bodies)
 {
-    std::shared_ptr<DayListUser> user(new DayListUser());
+    shared_ptr<DayListUser> user(new DayListUser());
     if (!bodies.count("account") || !bodies.count("cipher"))
         return 0;
     // 验证账号密码长度是否符合要求
@@ -65,7 +72,7 @@ int registeAPI(std::map<std::string, std::string>& bodies)
  * 用户上传日程
  * @params:userId, startTime, endTime, isAlarm, advancedAlarmMintes, location, describtion, remarks
  */
-int uploadScheduleItemAPI(std::map<std::string, std::string>& bodies)
+int uploadScheduleItemAPI(map<string, string>& bodies)
 {
     if (!bodies.count("userId") || !bodies.count("startTime") 
         || !bodies.count("endTime") || !bodies.count("describtion"))
@@ -75,7 +82,7 @@ int uploadScheduleItemAPI(std::map<std::string, std::string>& bodies)
     /**
      * to do : 正则匹配判断 startTime 和 endTime 是否符合格式要求
      */
-    std::shared_ptr<DayListUser> user(new DayListUser());
+    shared_ptr<DayListUser> user(new DayListUser());
     return user -> uploadScheduleItem(bodies);
 }
 
@@ -83,35 +90,35 @@ int uploadScheduleItemAPI(std::map<std::string, std::string>& bodies)
  * 获取用户日程，每次10条
  * @params:userId, page
  */
-int getUserItem(std::map<std::string, std::string>& urlData, std::string& items, char& more)
+int getUserItem(map<string, string>& urlData, string& items, char& more)
 {
     if (!urlData.count("userId") || !urlData.count("page"))
         return -1;
-    std::shared_ptr<DayListUser> user(new DayListUser());
+    shared_ptr<DayListUser> user(new DayListUser());
     return user -> getUserItem(urlData, items, more);
 }
 
 /**
  * 获取用户信息
  */
-int getUserInformation(std::map<std::string, std::string>& urlData, std::string& userInformation)
+int getUserInformation(map<string, string>& urlData, string& userInformation)
 {
     if (!urlData.count("userId"))
         return -1;
-    std::shared_ptr<DayListUser> user(new DayListUser());
-    std::string userId = urlData["userId"];
+    shared_ptr<DayListUser> user(new DayListUser());
+    string userId = urlData["userId"];
     return user -> getUserInformation(userId, userInformation);
 }
 
 /**
  * 修改用户信息
  */
-int modifyUserInformation(std::map<std::string, std::string>& bodies)
+int modifyUserInformation(map<string, string>& bodies)
 {
     if (!bodies.count("userId"))
         return -1;
     if (bodies.size() < 2)
         return -1;
-    std::shared_ptr<DayListUser> user(new DayListUser());
+    shared_ptr<DayListUser> user(new DayListUser());
     return user -> modifyUserInformation(bodies);
 }
