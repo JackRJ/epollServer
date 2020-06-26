@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-26 15:31:33
+ * @LastEditTime: 2020-06-26 15:34:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -418,7 +418,7 @@ AnalysisState HttpData::analysisRequest()
     {
         std::string header;
         header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
-        printf("header cookid:", headers_["cookie"]);
+        printf("header cookid:", headers_["Cookie"]);
         switch (hash_[url_])
         {
             /**
