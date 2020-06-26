@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:06:41
+ * @LastEditTime: 2020-06-26 18:07:43
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -29,7 +29,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
         {
             // 获取数据库 cookie 时间
             string data = vec.at(3);
-            printf("id : %i\n", id);
             // 获取当前时间
             time_t timep;
             struct tm *cur;
@@ -44,6 +43,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             last -> tm_sec = atoi(data.substr(17, 2).c_str());
             // 判断时间是否在三天之内
             double diff = difftime(mktime(last), mktime(cur));//转换结构体为time_t,利用difftime,计算时间差  
+            printf("id : %i\n", id);
             if (diff < 86400 * 3 && vec[2] == headers_["Cookie"])
             {
                 header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
