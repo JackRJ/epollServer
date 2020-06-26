@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 20:47:27
+ * @LastEditTime: 2020-06-26 20:48:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -41,13 +41,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             last.tm_hour = atoi(data.substr(11, 2).c_str());
             last.tm_min = atoi(data.substr(14, 2).c_str());
             last.tm_sec = atoi(data.substr(17, 2).c_str());
-            struct tm n = { 0 };
-            n.tm_year = cur -> tm_year;
-            n.tm_mon = cur -> tm_mon;
-            n.tm_mday = cur -> tm_mday;
-            n.tm_hour = cur -> tm_hour;
-            n.tm_min = cur -> tm_min;
-            n.tm_sec = cur -> tm_sec;
             // 判断时间是否在三天之内
             double diff = difftime(mktime(cur), mktime(&last));//转换结构体为time_t,利用difftime,计算时间差  
             // printf("%d/%d/%d %02d:%02d:%02d\n", 1900 + last->tm_year, 1+ last->tm_mon, last->tm_mday,last->tm_hour, last->tm_min, last->tm_sec);

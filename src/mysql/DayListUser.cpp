@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 17:54:21
+ * @LastEditTime: 2020-06-26 20:50:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -322,7 +322,7 @@ int DayListUser::modifyUserInformation(std::map<std::string, std::string>& bodie
  */
 int DayListUser::updateCookie(int userId, const std::string& cid)
 {
-    std::string str = "update cookie set cid = '" + cid + "' where id = " + std::to_string(userId) + ";";
+    std::string str = "update cookie set cid = '" + cid + "' where userId = " + std::to_string(userId) + ";";
     // 更新数据库
     int res = mysql_query(&conn, str.c_str());
     if (res)
