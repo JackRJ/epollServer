@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-26 20:50:05
+ * @LastEditTime: 2020-06-26 21:12:46
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -322,9 +322,35 @@ int DayListUser::modifyUserInformation(std::map<std::string, std::string>& bodie
  */
 int DayListUser::updateCookie(int userId, const std::string& cid)
 {
+
+    std::string str = "select * from cookie where userId = " + std::to_string(userId) + ";";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return {};
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    // 没有记录
+    if (rowcount == 0)
+    {
+        std::string str = "insert into cookie (userId, cid) values (" 
+            + std::to_string(userId) 
+            + ", '" + cid + "');";
+        // 更新数据库
+        res = mysql_query(&conn, str.c_str());
+        if (res)
+        {
+            printf("mysql error\n");
+            return 0;
+        }
+        return 1;
+    }
+    // 有记录，更新即可
     std::string str = "update cookie set cid = '" + cid + "' where userId = " + std::to_string(userId) + ";";
     // 更新数据库
-    int res = mysql_query(&conn, str.c_str());
+    res = mysql_query(&conn, str.c_str());
     if (res)
     {
         printf("mysql error\n");
