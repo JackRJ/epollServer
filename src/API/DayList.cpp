@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 20:56:59
+ * @LastEditTime: 2020-06-26 20:59:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -64,7 +64,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
     int result = user -> login(bodies, userId);
     if (result == 1)
     {
-        string cid = to_string(rand() % (100000000));
+        string cid = to_string(rand(time(0)) % (100000000));
         user -> updateCookie(userId, cid);
         header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
     }
