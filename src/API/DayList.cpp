@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 17:56:00
+ * @LastEditTime: 2020-06-26 18:04:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -22,6 +22,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
         int id = user -> getUserId(bodies["account"]);
         if (id == -1)
             return -1;
+        printf("id : %i\n", id);
         auto vec = user -> getCookie(id);
         // 此时数据库 cookie 有此项，并且请求报文有 cookie 
         if (!vec.empty())
@@ -44,7 +45,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             double diff = difftime(mktime(last), mktime(cur));//转换结构体为time_t,利用difftime,计算时间差  
             if (diff < 86400 * 3 && vec[2] == headers_["Cookie"])
             {
-                header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist";
+                header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
                 userId = id;
                 return 1;
             }
@@ -65,7 +66,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
         user -> updateCookie(userId, cid);
         header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
     }
-        
     return result;
 }
 
