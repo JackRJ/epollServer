@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:53:17
+ * @LastEditTime: 2020-06-26 18:53:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -32,7 +32,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             // 获取当前时间
             time_t timep;
             struct tm *cur;
-            struct tm last { 0 };
+            struct tm last = { 0 };
             time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
             cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
             last.tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
