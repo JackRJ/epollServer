@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 20:52:25
+ * @LastEditTime: 2020-06-26 20:55:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -47,7 +47,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             printf("diff : %f\n", diff);
             printf("header cookie : %s\n", headers_["Cookie"].c_str());
             printf("databases cookie : %s\n", vec[2].c_str());
-            if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(4))
+            if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(0, 8))
             {
                 header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
                 userId = id;
