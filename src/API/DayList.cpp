@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:51:46
+ * @LastEditTime: 2020-06-26 18:53:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -32,15 +32,15 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             // 获取当前时间
             time_t timep;
             struct tm *cur;
-            struct tm *last = new tm();
+            struct tm last { 0 };
             time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
             cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
-            last -> tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
-            last -> tm_mon = atoi(data.substr(5, 2).c_str()) - 1;
-            last -> tm_mday = atoi(data.substr(8, 2).c_str());
-            last -> tm_hour = atoi(data.substr(11, 2).c_str());
-            last -> tm_min = atoi(data.substr(14, 2).c_str());
-            last -> tm_sec = atoi(data.substr(17, 2).c_str());
+            last.tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
+            last.tm_mon = atoi(data.substr(5, 2).c_str()) - 1;
+            last.tm_mday = atoi(data.substr(8, 2).c_str());
+            last.tm_hour = atoi(data.substr(11, 2).c_str());
+            last.tm_min = atoi(data.substr(14, 2).c_str());
+            last.tm_sec = atoi(data.substr(17, 2).c_str());
             struct tm n = { 0 };
             n.tm_year = cur -> tm_year;
             n.tm_mon = cur -> tm_mon;
@@ -49,9 +49,8 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             n.tm_min = cur -> tm_min;
             n.tm_sec = cur -> tm_sec;
             // 判断时间是否在三天之内
-            double diff = difftime(mktime(&n), mktime(last));//转换结构体为time_t,利用difftime,计算时间差  
+            double diff = difftime(mktime(&n), mktime(&last));//转换结构体为time_t,利用difftime,计算时间差  
             // printf("%d/%d/%d %02d:%02d:%02d\n", 1900 + last->tm_year, 1+ last->tm_mon, last->tm_mday,last->tm_hour, last->tm_min, last->tm_sec);
-            delete last;
             printf("diff : %d\n", diff);
             if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(4))
             {
