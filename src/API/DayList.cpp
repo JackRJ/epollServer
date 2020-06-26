@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:04:36
+ * @LastEditTime: 2020-06-26 18:05:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -22,9 +22,10 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
         int id = user -> getUserId(bodies["account"]);
         if (id == -1)
             return -1;
-        printf("id : %i\n", id);
+        
         auto vec = user -> getCookie(id);
         // 此时数据库 cookie 有此项，并且请求报文有 cookie 
+        printf("id : %i\n", id);
         if (!vec.empty())
         {
             // 获取数据库 cookie 时间
