@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 18:22:04
+ * @LastEditTime: 2020-06-26 18:25:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -36,7 +36,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
             time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
             cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
             last -> tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
-            last -> tm_mon = atoi(data.substr(5, 2).c_str());
+            last -> tm_mon = atoi(data.substr(5, 2).c_str()) - 1;
             last -> tm_mday = atoi(data.substr(8, 2).c_str());
             last -> tm_hour = atoi(data.substr(11, 2).c_str());
             last -> tm_min = atoi(data.substr(14, 2).c_str());
