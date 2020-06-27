@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-27 10:43:31
+ * @LastEditTime: 2020-06-27 10:44:32
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -228,7 +228,10 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
     // 获取item数目
     int rowcount = mysql_num_rows(result);
     if (rowcount == 0)
+    {
+        more = '0';
         return 1;
+    }
     else if (rowcount == 10)
         more = '1';
     else 

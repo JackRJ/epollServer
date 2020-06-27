@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-27 10:36:12
+ * @LastEditTime: 2020-06-27 10:43:53
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -527,7 +527,6 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 else if (res == 1)
                 {
-                    printf("success\n");
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"more\":" + more
                         + ",\"scheduleItems\":[" + items + "]}";
                 } else 
