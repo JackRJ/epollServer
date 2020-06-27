@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-27 10:36:52
+ * @LastEditTime: 2020-06-27 10:43:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -213,9 +213,9 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
 {
     // 获取参数
     std::string userId = urlData["userId"];
-    std::string page = urlData["page"];
+    int page = atoi(urlData["page"].c_str()) * 10;
     std::string str = "select * from schedule where userId = '" + userId + "' order by startTime desc limit "
-        + page + ",10;";
+        + std::to_string(page) + ",10;";
     // 查询数据库
     int res = mysql_query(&conn, str.c_str());
     if (res)
@@ -223,14 +223,13 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         printf("mysql error\n");
         return 0;
     }
-
-    printf("getresult\n");
-
     // 获取结果
     result = mysql_store_result(&conn);
     // 获取item数目
     int rowcount = mysql_num_rows(result);
-    if (rowcount == 10)
+    if (rowcount == 0)
+        return 1;
+    else if (rowcount == 10)
         more = '1';
     else 
         more = '0';
@@ -243,9 +242,6 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         field = mysql_fetch_field_direct(result,i);
         vec[i] = field -> name;
     }
-
-    printf("getjson\n");
-
     // 将个行处理为 json 格式数据
     while (row != NULL)
     {
