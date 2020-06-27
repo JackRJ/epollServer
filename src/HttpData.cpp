@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-27 10:09:21
+ * @LastEditTime: 2020-06-27 10:11:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -520,7 +520,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 std::string items;
                 char more;
-                int res = getUserItem(urlData, urlData, items, more);
+                int res = getUserItem(headers_, urlData, items, more);
                 if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
                 else if (res == 0)
@@ -539,7 +539,7 @@ AnalysisState HttpData::analysisRequest()
             case daylist_getUserInformation:
             {
                 std::string userInformation;
-                int res = getUserInformation(urlData, urlData, userInformation);
+                int res = getUserInformation(headers_, urlData, userInformation);
                 if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
                 else if (res == 0)
