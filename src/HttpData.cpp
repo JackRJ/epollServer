@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-27 10:03:03
+ * @LastEditTime: 2020-06-27 10:08:02
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -467,6 +467,7 @@ AnalysisState HttpData::analysisRequest()
                 // 之后再进行解析请求体
                 this -> parseBody(true);
                 int rst = uploadScheduleItemAPI(headers_, bodies);
+                header += "\r\n";
                 if (rst == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"upload success\"}";
                 else if (rst == -1)
@@ -483,6 +484,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 // 对中文的url解码
                 // 之后再进行解析请求体
+                header += "\r\n";
                 this -> parseBody(true);
                 if (bodies.empty())
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
