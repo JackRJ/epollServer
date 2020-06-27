@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-26 21:20:38
+ * @LastEditTime: 2020-06-27 10:02:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -22,25 +22,25 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
 /**
  * 用户注册
  */
-int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header);
+int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header, int& userId);
 
 /**
  * 用户上传日程
  */
-int uploadScheduleItemAPI(map<string, string>& bodies);
+int uploadScheduleItemAPI(map<string, string>& headers_, map<string, string>& bodies);
 
 /**
  * 获取用户日程，一次10条
  */
-int getUserItem(map<string, string>& urlData, string& items, char& more);
+int getUserItem(map<string, string>& headers_, map<string, string>& urlData, string& items, char& more);
 
 
 /**
  * 获取用户信息
  */
-int getUserInformation(map<string, string>& urlData, string& userInformation);
+int getUserInformation(map<string, string>& headers_, map<string, string>& urlData, string& userInformation);
 
 /**
  * 修改用户信息
  */
-int modifyUserInformation(map<string, string>& bodies);
+int modifyUserInformation(map<string, string>& headers_, map<string, string>& bodies);

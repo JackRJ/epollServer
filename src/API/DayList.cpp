@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-26 21:46:41
+ * @LastEditTime: 2020-06-27 10:03:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -16,13 +16,10 @@
 int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId, string& header)
 {
     // 验证cookie是否正确
-    if (headers_.count("Cookie") && bodies.count("account"))
+    if (headers_.count("Cookie") && bodies.count("userId"))
     {
         shared_ptr<DayListUser> user(new DayListUser());
-        int id = user -> getUserId(bodies["account"]);
-        if (id == -1)
-            return -1;
-        
+        int id = atoi(bodies["userId"].c_str());
         auto vec = user -> getCookie(id);
         // 此时数据库 cookie 有此项，并且请求报文有 cookie 
         if (!vec.empty())
@@ -51,7 +48,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
                 return 1;
             } else if (diff >= 86400 * 3)
             {
-                printf("userId : %i\n", id);
                 user -> deleteCookie(id);
             }
                 
@@ -79,7 +75,7 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
  * 用户注册
  * @params:account, cipher
  */
-int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header)
+int registeAPI(map<string, string>& headers_, map<string, string>& bodies, string& header, int& userId)
 {
     shared_ptr<DayListUser> user(new DayListUser());
     if (!bodies.count("account") || !bodies.count("cipher"))
@@ -116,6 +112,7 @@ int registeAPI(map<string, string>& headers_, map<string, string>& bodies, strin
         string cid = to_string(rand() % (100000000));
         user -> updateCookie(id, cid);
         header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
+        userId = user -> getUserId(bodies["account"]);
     }
     return ans;
 }
@@ -124,17 +121,27 @@ int registeAPI(map<string, string>& headers_, map<string, string>& bodies, strin
  * 用户上传日程
  * @params:userId, startTime, endTime, isAlarm, advancedAlarmMintes, location, describtion, remarks
  */
-int uploadScheduleItemAPI(map<string, string>& bodies)
+int uploadScheduleItemAPI(map<string, string>& headers_, map<string, string>& bodies)
 {
+    if (!headers_.count("Cookie"))
+        return -1;
     if (!bodies.count("userId") || !bodies.count("startTime") 
         || !bodies.count("endTime") || !bodies.count("describtion"))
         return -1;
     if (bodies.count("isAlarm") && !bodies.count("advancedAlarmMintes"))
         return -1;
+
+    shared_ptr<DayListUser> user(new DayListUser());
+    // 验证 cookie 的正确性
+    int userId = atoi(bodies["userId"].c_str());
+    auto vec = user -> getCookie(userId);
+    auto pos = headers_["Cookie"].find(";");
+    if (vec[2] != headers_["Cookie"].substr(0, pos))
+        return -1;
     /**
      * to do : 正则匹配判断 startTime 和 endTime 是否符合格式要求
      */
-    shared_ptr<DayListUser> user(new DayListUser());
+    
     return user -> uploadScheduleItem(bodies);
 }
 
@@ -142,35 +149,57 @@ int uploadScheduleItemAPI(map<string, string>& bodies)
  * 获取用户日程，每次10条
  * @params:userId, page
  */
-int getUserItem(map<string, string>& urlData, string& items, char& more)
+int getUserItem(map<string, string>& headers_, map<string, string>& urlData, string& items, char& more)
 {
+    if (!headers_.count("Cookie"))
+        return -1;
     if (!urlData.count("userId") || !urlData.count("page"))
         return -1;
     shared_ptr<DayListUser> user(new DayListUser());
+    // 验证 cookie 的正确性
+    int userId = atoi(urlData["userId"].c_str());
+    auto vec = user -> getCookie(userId);
+    auto pos = headers_["Cookie"].find(";");
+    if (vec[2] != headers_["Cookie"].substr(0, pos))
+        return -1;
     return user -> getUserItem(urlData, items, more);
 }
 
 /**
  * 获取用户信息
  */
-int getUserInformation(map<string, string>& urlData, string& userInformation)
+int getUserInformation(map<string, string>& headers_, map<string, string>& urlData, string& userInformation)
 {
+    if (!headers_.count("Cookie"))
+        return -1;
     if (!urlData.count("userId"))
         return -1;
     shared_ptr<DayListUser> user(new DayListUser());
     string userId = urlData["userId"];
+    // 验证 cookie 的正确性
+    auto vec = user -> getCookie(atoi(userId.c_str()));
+    auto pos = headers_["Cookie"].find(";");
+    if (vec[2] != headers_["Cookie"].substr(0, pos))
+        return -1;
     return user -> getUserInformation(userId, userInformation);
 }
 
 /**
  * 修改用户信息
  */
-int modifyUserInformation(map<string, string>& bodies)
+int modifyUserInformation(map<string, string>& headers_, map<string, string>& bodies)
 {
+    if (!headers_.count("Cookie"))
+        return -1;
     if (!bodies.count("userId"))
         return -1;
     if (bodies.size() < 2)
         return -1;
     shared_ptr<DayListUser> user(new DayListUser());
+    // 验证 cookie 的正确性
+    auto vec = user -> getCookie(atoi(bodies["userId"].c_str()));
+    auto pos = headers_["Cookie"].find(";");
+    if (vec[2] != headers_["Cookie"].substr(0, pos))
+        return -1;
     return user -> modifyUserInformation(bodies);
 }

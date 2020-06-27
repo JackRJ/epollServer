@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-26 17:31:07
+ * @LastEditTime: 2020-06-27 10:02:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -42,12 +42,12 @@ class UserAPI
 {
     /**
      * 登陆
-     * 再次或者注册后登陆时，可以带上 cookie（三天内有效），如 cookie 无效，则再判断账号密码、更新 cookie
+     * 再次或者注册后登陆时，可以带上 cookie（三天内有效, 目前还没有写入expires），如 cookie 无效，则再判断账号密码, 正确则更新 cookie
      */
     'daylist/login' = 
     {
         method: 'POST',
-        req: [account, cipher],
+        req: [account, cipher] / [userId(带cookie)],
         res: 
         {
             userId: Number,
@@ -60,6 +60,7 @@ class UserAPI
      * 注册
      * account: 10位数字
      * cipher: 8位数字字母及以上，至20位
+     * 注册之后，会返回一个 cookie, cookie 带上 userId 即可直接免密登陆，cookie 三天内有效
      */
     'daylist/register' = 
     {
@@ -68,12 +69,13 @@ class UserAPI
         res: 
         {
             result: String,
-            msg: String
+            msg: String,
+            userId: Number
         }
     }
 
     /**
-     * 用户上传日程
+     * 用户上传日程，必须携带 cookie
      */
     'daylist/uploadScheduleItem' = 
     {
@@ -87,7 +89,7 @@ class UserAPI
     }
 
     /**
-     * 获取用户日程，每次10条
+     * 获取用户日程，每次10条，必须携带 cookie
      */
     'daylist/getUserItems' = 
     {
@@ -103,7 +105,7 @@ class UserAPI
     }
 
     /**
-     * 获取用户信息
+     * 获取用户信息，必须携带 cookie
      */
     'daylist/getUserInformation' = 
     {
@@ -118,7 +120,7 @@ class UserAPI
     }
 
     /**
-     * 修改用户信息
+     * 修改用户信息，必须携带 cookie
      */
     'daylist/modifyUserInformation' = 
     {
