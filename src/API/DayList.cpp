@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-27 10:25:03
+ * @LastEditTime: 2020-06-27 10:25:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -161,12 +161,11 @@ int getUserItem(map<string, string>& headers_, map<string, string>& urlData, str
     // 验证 cookie 的正确性
     int userId = atoi(urlData["userId"].c_str());
     auto vec = user -> getCookie(userId);
-    if (vec.size() < 3)
+    if (vec.empty())
         return -1;
     auto pos = headers_["Cookie"].find(";");
     if (vec[2] != headers_["Cookie"].substr(0, pos))
         return -1;
-    printf("ssss\n");
     return user -> getUserItem(urlData, items, more);
 }
 
