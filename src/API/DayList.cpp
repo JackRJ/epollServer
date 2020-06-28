@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 10:52:38
+ * @LastEditTime: 2020-06-28 10:56:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -19,6 +19,7 @@ DayListAPI::~DayListAPI()
 
 int DayListAPI::checkCooie(const int& userId, const string& cookie)
 {
+    printf("cookie : %s\n", cookie.c_str());
     auto vec = user -> getCookie(userId);
     if (vec.empty())
         return -1;
