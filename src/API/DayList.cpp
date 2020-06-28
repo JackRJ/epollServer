@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 10:44:46
+ * @LastEditTime: 2020-06-28 10:51:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -40,6 +40,7 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     // 转换结构体为time_t,利用difftime,计算时间差  
     // 判断时间是否在三天之内
     double diff = difftime(mktime(cur), mktime(&last));
+    printf("diff: %f\n", diff);
     auto pos = cookie.find(";");
     if (diff < 86400 * 3 && vec[2] == cookie.substr(0, pos))
         return 1;
