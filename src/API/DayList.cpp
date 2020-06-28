@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 10:14:35
+ * @LastEditTime: 2020-06-28 10:16:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -11,6 +11,9 @@
 
 DayListAPI::DayListAPI():
     user(new DayListUser())
+{ }
+
+DayListAPI::~DayListAPI()
 { }
 
 int DayListAPI::checkCooie(const int& userId, const string& cookie)
