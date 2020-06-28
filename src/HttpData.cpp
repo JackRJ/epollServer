@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-27 10:43:53
+ * @LastEditTime: 2020-06-28 10:03:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -427,7 +427,8 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 int UserId = 0;
-                int res = loginAPI(headers_, bodies, UserId, header);
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI());
+                int res = daylistApi -> loginAPI(headers_, bodies, UserId, header);
                 header += "\r\n";
                 if (res == 1)
                     outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"

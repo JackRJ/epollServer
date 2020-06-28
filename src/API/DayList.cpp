@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-27 10:25:59
+ * @LastEditTime: 2020-06-28 10:14:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -9,48 +9,60 @@
 #include "DayList.h"
 #include <memory>
 
+DayListAPI::DayListAPI():
+    user(new DayListUser())
+{ }
+
+int DayListAPI::checkCooie(const int& userId, const string& cookie)
+{
+    auto vec = user -> getCookie(userId);
+    if (vec.empty())
+        return -1;
+    // 获取数据库 cookie 时间
+    string data = vec.at(3);
+    // 获取当前时间
+    time_t timep;
+    struct tm *cur;
+    struct tm last = { 0 };
+    time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
+    cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
+    // 获取数据库 cookie 有效时间
+    last.tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
+    last.tm_mon = atoi(data.substr(5, 2).c_str()) - 1;
+    last.tm_mday = atoi(data.substr(8, 2).c_str());
+    last.tm_hour = atoi(data.substr(11, 2).c_str());
+    last.tm_min = atoi(data.substr(14, 2).c_str());
+    last.tm_sec = atoi(data.substr(17, 2).c_str());
+    // 转换结构体为time_t,利用difftime,计算时间差  
+    // 判断时间是否在三天之内
+    double diff = difftime(mktime(cur), mktime(&last));
+    auto pos = cookie.find(";");
+    if (diff < 86400 * 3 && vec[2] == cookie.substr(0, pos))
+        return 1;
+    else if (diff >= 86400 * 3)
+        return 0;
+    return -1;
+}
+
 /**
  * 用户登陆
  * @params:account, cipher
  */
-int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId, string& header)
+int DayListAPI::loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId, string& header)
 {
     // 验证cookie是否正确
     if (headers_.count("Cookie") && bodies.count("userId"))
     {
-        shared_ptr<DayListUser> user(new DayListUser());
-        int id = atoi(bodies["userId"].c_str());
-        auto vec = user -> getCookie(id);
+        userId = atoi(bodies["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
         // 此时数据库 cookie 有此项，并且请求报文有 cookie 
-        if (!vec.empty())
+        if (res == 1)
         {
-            // 获取数据库 cookie 时间
-            string data = vec.at(3);
-            // 获取当前时间
-            time_t timep;
-            struct tm *cur;
-            struct tm last = { 0 };
-            time(&timep); //获取从1970至今过了多少秒，存入time_t类型的timep
-            cur = localtime(&timep);//用localtime将秒数转化为struct tm结构体
-            last.tm_year = atoi(data.substr(0, 4).c_str()) - 1900;
-            last.tm_mon = atoi(data.substr(5, 2).c_str()) - 1;
-            last.tm_mday = atoi(data.substr(8, 2).c_str());
-            last.tm_hour = atoi(data.substr(11, 2).c_str());
-            last.tm_min = atoi(data.substr(14, 2).c_str());
-            last.tm_sec = atoi(data.substr(17, 2).c_str());
-            // 判断时间是否在三天之内
-            double diff = difftime(mktime(cur), mktime(&last));//转换结构体为time_t,利用difftime,计算时间差  
-            auto pos = headers_["Cookie"].find(";");
-            if (headers_.count("Cookie") && diff < 86400 * 3 && vec[2] == headers_["Cookie"].substr(0, pos))
-            {
-                header += "Set-Cookie: cid = " + vec[2] + "; path = /daylist\r\n";
-                userId = id;
-                return 1;
-            } else if (diff >= 86400 * 3)
-            {
-                user -> deleteCookie(id);
-            }
-                
+            header += "Set-Cookie: cid = " + headers_["Cookie"] + "; path = /daylist\r\n";
+            return 1;
+        } else if (res == 0)
+        {
+            user -> deleteCookie(userId);
         }
     }
     if (!bodies.count("account") || !bodies.count("cipher"))
@@ -60,7 +72,6 @@ int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& us
     if (len != 10 || (bodies["cipher"].size() < 8 || bodies["cipher"].size() > 20))
         return -1;
     
-    shared_ptr<DayListUser> user(new DayListUser());
     int result = user -> login(bodies, userId);
     if (result == 1)
     {

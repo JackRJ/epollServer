@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-27 10:02:23
+ * @LastEditTime: 2020-06-28 10:05:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -14,10 +14,23 @@
 
 using namespace std;
 
-/**
- * 用户登陆
- */
-int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId, string& header);
+class DayListAPI
+{
+private:
+    shared_ptr<DayListUser> user;
+
+    int checkCooie(const int& userId, const string& cookie);
+public:
+    DayListAPI();
+    ~DayListAPI();
+
+   /**
+    * 用户登陆
+    */
+    int loginAPI(map<string, string>& headers_, map<string, string>& bodies, int& userId, string& header); 
+};
+
+
 
 /**
  * 用户注册
