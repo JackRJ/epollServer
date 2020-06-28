@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-28 10:44:28
+ * @LastEditTime: 2020-06-28 11:00:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -22,7 +22,7 @@ private:
 
     int checkCooie(const int& userId, const string& cookie);
 public:
-    DayListAPI(map<string, string> headers);
+    DayListAPI(map<string, string>& headers);
     ~DayListAPI();
 
    /**

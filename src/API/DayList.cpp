@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 10:58:38
+ * @LastEditTime: 2020-06-28 11:00:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -9,7 +9,7 @@
 #include "DayList.h"
 #include <memory>
 
-DayListAPI::DayListAPI(map<string, string> headers):
+DayListAPI::DayListAPI(map<string, string>& headers):
     headers_(headers),
     user(new DayListUser())
 { }
@@ -61,7 +61,6 @@ int DayListAPI::loginAPI(map<string, string>& bodies, int& userId, string& heade
     if (headers_.count("Cookie") && bodies.count("userId"))
     {
         userId = atoi(bodies["userId"].c_str());
-        printf("cookie : %f\n", headers_.size());
         int res = checkCooie(userId, headers_["Cookie"]);
         // 此时数据库 cookie 有此项，并且请求报文有 cookie 
         if (res == 1)
