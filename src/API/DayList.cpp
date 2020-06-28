@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 10:51:05
+ * @LastEditTime: 2020-06-28 10:52:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -42,6 +42,7 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     double diff = difftime(mktime(cur), mktime(&last));
     printf("diff: %f\n", diff);
     auto pos = cookie.find(";");
+    printf("%s => %s\n", vec[2].c_str(), cookie.substr(0, pos).c_str());
     if (diff < 86400 * 3 && vec[2] == cookie.substr(0, pos))
         return 1;
     else if (diff >= 86400 * 3)
