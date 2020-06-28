@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-27 10:02:07
+ * @LastEditTime: 2020-06-28 09:55:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -25,7 +25,7 @@ export const UserItem =
  */
 export const ScheduleItem = 
 {
-    // scheduleId: Number,
+    scheduleId: Number,
     userId: Number,
     isAlarm: Number, // 1: 是 0：否
     advancedAlarmMintes: Number, // 提前多少分钟提醒
@@ -89,7 +89,7 @@ class UserAPI
     }
 
     /**
-     * 获取用户日程，每次10条，必须携带 cookie
+     * 获取用户日程，每次10条，必须携带 cookie, page 从 0 开始
      */
     'daylist/getUserItems' = 
     {

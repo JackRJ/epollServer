@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-27 10:50:03
+ * @LastEditTime: 2020-06-28 09:55:00
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -238,19 +238,19 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
         more = '0';
     int fieldcount = mysql_num_fields(result);
     MYSQL_ROW row = mysql_fetch_row(result);
-    // 获取字段
+    // 获取字段        printf("row: %f\n", rowcount);
     std::vector<std::string> vec(fieldcount);
     for(int i = 1; i < fieldcount; i++)
     {
         field = mysql_fetch_field_direct(result,i);
         vec[i] = field -> name;
     }
+    vec[0] = "scheduleId";
     // 将个行处理为 json 格式数据
     while (row != NULL && rowcount--)
     {
-        printf("row: %f\n", rowcount);
         items += "{";
-        for(int i = 1; i < fieldcount; i++)
+        for(int i = 0; i < fieldcount; i++)
         {
             field = mysql_fetch_field_direct(result,i);
             items += ("\"" + vec[i] + "\":\"");
