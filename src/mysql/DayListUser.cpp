@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-28 18:01:20
+ * @LastEditTime: 2020-06-28 18:07:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -393,7 +393,8 @@ int DayListUser::updateCookie(int userId, const std::string& cid)
 int DayListUser::deleteScheduleItem(std::map<std::string, std::string>& bodies)
 {
     std::string scheduleId = bodies["scheduleId"];
-    std::string str = "select * from schedule where sid = " + scheduleId + ";";
+    std::string userId = bodies["userId"];
+    std::string str = "select * from schedule where sid = " + scheduleId + " and userId = " + userId +  ";";
     int res = mysql_query(&conn, str.c_str());
     if (res)
     {
