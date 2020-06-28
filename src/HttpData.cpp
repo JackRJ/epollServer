@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-28 10:45:38
+ * @LastEditTime: 2020-06-28 17:56:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -22,7 +22,8 @@ std::map<std::string, APIpath> HttpData::hash_ =
         std::make_pair("daylist/uploadScheduleItem", daylist_uploadScheduleItem),
         std::make_pair("daylist/getUserItems", daylist_getUserItems),
         std::make_pair("daylist/getUserInformation", daylist_getUserInformation),
-        std::make_pair("daylist/modifyUserInformation", daylist_modifyUserInformation)
+        std::make_pair("daylist/modifyUserInformation", daylist_modifyUserInformation),
+        std::make_pair("daylist/deleteScheduleItem", daylist_deleteScheduleItem)
     };
 
 HttpData::HttpData(int fd):
@@ -387,7 +388,6 @@ int HttpData::parseBody(bool isDecode)
     }
     bool error = 0;
     std::string& str = inBuffer_;
-    printf("inbuff : %s\n", str.c_str());
     int key_start = 0, key_end = 0;
     int val_start = 0;
     int i = 0;
@@ -506,6 +506,26 @@ AnalysisState HttpData::analysisRequest()
                     else 
                         break;
                 }
+                return ANALYSIS_SUCCESS;
+            }
+            /**
+             * 删除日程
+             */
+            case daylist_deleteScheduleItem:
+            {
+                // 之后再进行解析请求体
+                header += "\r\n";
+                this -> parseBody(0);
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                int res = daylistApi -> deleteScheduleItem(bodies);
+                if (res == -1)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
+                else if (res == 0)
+                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
+                else if (res == 1)
+                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
+                else 
+                    break;
                 return ANALYSIS_SUCCESS;
             }
             default: return ANALYSIS_ERROR;

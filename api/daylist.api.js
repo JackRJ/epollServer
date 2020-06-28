@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-28 09:55:17
+ * @LastEditTime: 2020-06-28 17:51:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -127,6 +127,20 @@ class UserAPI
         method: 'POST',
         req: [userId, (UserItem)], // userItem中需要修改的项目即可，数目至少一个
         res: 
+        {
+            result: String,
+            msg: String
+        }
+    }
+
+    /**
+     * 删除日程，必须携带 cookie
+     */
+    'daylist/deleteScheduleItem' = 
+    {
+        method: 'POST',
+        req: [userId, scheduleId],
+        res:
         {
             result: String,
             msg: String

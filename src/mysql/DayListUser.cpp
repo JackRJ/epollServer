@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-28 11:12:43
+ * @LastEditTime: 2020-06-28 18:01:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -378,6 +378,33 @@ int DayListUser::updateCookie(int userId, const std::string& cid)
     // 有记录，更新即可
     str = "update cookie set cid = '" + cid + "' where userId = " + std::to_string(userId) + ";";
     // 更新数据库
+    res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    return 1;
+}
+
+/**
+ * 删除日程
+ */
+int DayListUser::deleteScheduleItem(std::map<std::string, std::string>& bodies)
+{
+    std::string scheduleId = bodies["scheduleId"];
+    std::string str = "select * from schedule where sid = " + scheduleId + ";";
+    int res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    result = mysql_store_result(&conn);
+    int rowcount = mysql_num_rows(result);
+    if (rowcount == 0)
+        return -1;
+    str = "delete from schedule where sid = " + scheduleId + ";";
     res = mysql_query(&conn, str.c_str());
     if (res)
     {

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-22 17:32:58
+ * @LastEditTime: 2020-06-28 17:49:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -80,7 +80,8 @@ enum APIpath
     daylist_uploadScheduleItem,
     daylist_getUserItems,
     daylist_getUserInformation,
-    daylist_modifyUserInformation
+    daylist_modifyUserInformation,
+    daylist_deleteScheduleItem
 };
 
 class HttpData

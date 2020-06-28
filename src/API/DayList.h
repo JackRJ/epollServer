@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-28 11:00:29
+ * @LastEditTime: 2020-06-28 17:53:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -54,6 +54,11 @@ public:
      * 修改用户信息
      */
     int modifyUserInformation(map<string, string>& bodies);
+
+    /**
+     * 删除日程
+     */
+    int deleteScheduleItem(map<string, string>& bodies);
 };
 
 

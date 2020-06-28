@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 11:02:55
+ * @LastEditTime: 2020-06-28 17:58:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -200,9 +200,7 @@ int DayListAPI::getUserInformation(map<string, string>& urlData, string& userInf
  */
 int DayListAPI::modifyUserInformation(map<string, string>& bodies)
 {
-    if (!headers_.count("Cookie"))
-        return -1;
-    if (!bodies.count("userId"))
+    if (!headers_.count("Cookie") || !bodies.count("userId"))
         return -1;
     if (bodies.size() < 2)
         return -1;
@@ -213,4 +211,20 @@ int DayListAPI::modifyUserInformation(map<string, string>& bodies)
     if (res != 1)
         return -1;
     return user -> modifyUserInformation(bodies);
+}
+
+/**
+ * 删除日程
+ */
+int DayListAPI::deleteScheduleItem(map<string, string>& bodies)
+{
+    if (!bodies.count("userId") || !bodies.count("scheduleId") || !headers_.count("Cookie"))
+        return -1;
+    // 验证 cookie 的正确性
+    int userId = atoi(bodies["userId"].c_str());
+    int res = checkCooie(userId, headers_["Cookie"]);
+    if (res != 1)
+        return -1;
+    res = user -> deleteScheduleItem(bodies);
+    return res;
 }
