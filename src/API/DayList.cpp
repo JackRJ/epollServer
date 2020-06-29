@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 21:12:59
+ * @LastEditTime: 2020-06-29 21:20:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -168,8 +168,16 @@ int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& use
         cookie_ = to_string(rand() % (100000000));
         user -> updateCookie(id, cookie_);
         userId = user -> getUserId(bodies["account"]);
+    } else if (ans == -1)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "\"error\":\"account exited!\"");
+        return -1;
+    } else if (ans == 0)
+    {
+        this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "\"error\":\"mysql error, try again!\"");
+        return 0;
     }
-    setOutBuffer(200, "OK", "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"registe success\",\"userId\":"
                         + std::to_string(userId) +"}");
     return ans;
 }
