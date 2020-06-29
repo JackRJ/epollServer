@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-28 17:58:47
+ * @LastEditTime: 2020-06-29 21:12:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -9,8 +9,9 @@
 #include "DayList.h"
 #include <memory>
 
-DayListAPI::DayListAPI(map<string, string>& headers):
+DayListAPI::DayListAPI(map<string, string>& headers, string& outBuffer):
     headers_(headers),
+    outBuffer_(outBuffer),
     user(new DayListUser())
 { }
 
@@ -46,6 +47,20 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     else if (diff >= 86400 * 3)
         return 0;
     return -1;
+}
+
+int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
+{
+    // header
+    outBuffer_ = "HTTP/1.1 " + to_string(res_num) + " "
+         + short_msg + "\r\nContent-type: application/json\r\n";
+    if (isSetCookie)
+        outBuffer_ += "Set-Cookie: cid = " + cookie_ + "; path = /daylist\r\n";
+    outBuffer_ += "\r\n";
+
+    // body
+    outBuffer_ += msg;
+    return 1;
 }
 
 /**
@@ -92,42 +107,70 @@ int DayListAPI::loginAPI(map<string, string>& bodies, int& userId, string& heade
  */
 int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& userId)
 {
-    if (!bodies.count("account") || !bodies.count("cipher"))
-        return 0;
-    // 验证账号密码长度是否符合要求
-    int len = bodies["account"].size();
-    if (len != 10 || (bodies["cipher"].size() < 8 || bodies["cipher"].size() > 20))
-        return 0;
-    int start = 0;
-    // 验证账号是否由数字组成
-    while (start < len)
+    bool error = 0;
+    do
     {
-        if (!(bodies["account"][start] >= '0' || bodies["account"][start] <= '9'))
-            return 0;
-        ++start;
-    }
-    start = 0;
-    len = bodies["cipher"].size();
-    // 验证密码是否有数字字母组成
-    while (start < len)
+        if (!bodies.count("account") || !bodies.count("cipher"))
+        {
+            error = 1;
+            break;
+        }
+        // 验证账号密码长度是否符合要求
+        int accountLen = bodies["account"].size();
+        int cipherLen = bodies["cipher"].size();
+        if (accountLen != 10 || (cipherLen < 8 || cipherLen > 20))
+        {
+            error = 1;
+            break;
+        }
+        int start = 0;
+        // 验证账号是否由数字组成
+        while (start < accountLen)
+        {
+            if (!(bodies["account"][start] >= '0' || bodies["account"][start] <= '9'))
+            {
+                error = 1;
+                break;
+            }
+            ++start;
+        }
+        start = 0;
+        // 验证密码是否有数字字母组成
+        while (!error && start < cipherLen)
+        {
+            if (!((bodies["account"][start] >= '0' || bodies["account"][start] <= '9')
+                || (bodies["account"][start] >= 'a' || bodies["account"][start] <= 'z')
+                || (bodies["account"][start] >= 'A' || bodies["account"][start] <= 'Z')))
+            {
+                error = 1;
+                break;
+            }
+            ++start;
+        }
+    } while (false);
+    
+    if (error)
     {
-        if (!((bodies["account"][start] >= '0' || bodies["account"][start] <= '9')
-             || (bodies["account"][start] >= 'a' || bodies["account"][start] <= 'z')
-             || (bodies["account"][start] >= 'A' || bodies["account"][start] <= 'Z')))
-            return 0;
-        ++start;
+        this -> setOutBuffer(400, "INVALID REQUEST", "\"error\":\"request must contain correct account and cipher!\"");
+        return 0;
     }
+    
     int ans = user -> registe(bodies["account"], bodies["cipher"]);
     if (ans == 1)
     {
         int id = user -> getUserId(bodies["account"]);
         if (id == -1)
+        {
+            this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "\"error\":\"mysql error, try again!\"");
             return -1;
-        string cid = to_string(rand() % (100000000));
-        user -> updateCookie(id, cid);
-        header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
+        }
+        isSetCookie = 1;
+        cookie_ = to_string(rand() % (100000000));
+        user -> updateCookie(id, cookie_);
         userId = user -> getUserId(bodies["account"]);
     }
+    setOutBuffer(200, "OK", "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
+                        + std::to_string(userId) +"}");
     return ans;
 }
 

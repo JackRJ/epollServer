@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-28 17:56:52
+ * @LastEditTime: 2020-06-29 20:39:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -427,7 +427,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 int UserId = 0;
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int res = daylistApi -> loginAPI(bodies, UserId, header);
                 header += "\r\n";
                 if (res == 1)
@@ -447,7 +447,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 int userId = 0;
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int rst = daylistApi -> registeAPI(bodies, header, userId);
                 header += "\r\n";
                 if (rst == 1)
@@ -468,7 +468,7 @@ AnalysisState HttpData::analysisRequest()
                 // 对中文的url解码
                 // 之后再进行解析请求体
                 this -> parseBody(true);
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int rst = daylistApi -> uploadScheduleItemAPI(bodies);
                 header += "\r\n";
                 if (rst == 1)
@@ -493,7 +493,7 @@ AnalysisState HttpData::analysisRequest()
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
                 else 
                 {
-                    shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                    shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                     int res = daylistApi -> modifyUserInformation(bodies);
                     if (res == -1)
                         outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
@@ -516,7 +516,7 @@ AnalysisState HttpData::analysisRequest()
                 // 之后再进行解析请求体
                 header += "\r\n";
                 this -> parseBody(0);
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int res = daylistApi -> deleteScheduleItem(bodies);
                 if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
@@ -544,7 +544,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 std::string items;
                 char more;
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int res = daylistApi -> getUserItem(urlData, items, more);
                 if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
@@ -564,7 +564,7 @@ AnalysisState HttpData::analysisRequest()
             case daylist_getUserInformation:
             {
                 std::string userInformation;
-                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_));
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int res = daylistApi -> getUserInformation(urlData, userInformation);
                 if (res == -1)
                     outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";

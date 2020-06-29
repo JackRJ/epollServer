@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-06-28 17:53:45
+ * @LastEditTime: 2020-06-29 20:51:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
@@ -18,11 +18,18 @@ class DayListAPI
 {
 private:
     shared_ptr<DayListUser> user;
+    // http 请求头数据
     map<string, string>& headers_;
+    // 返回数据
+    string& outBuffer_;
+
+    bool isSetCookie;
+    string cookie_;
 
     int checkCooie(const int& userId, const string& cookie);
+    int setOutBuffer(int res_num, string short_msg, string msg);
 public:
-    DayListAPI(map<string, string>& headers);
+    DayListAPI(map<string, string>& headers, string& outBuffer);
     ~DayListAPI();
 
    /**
