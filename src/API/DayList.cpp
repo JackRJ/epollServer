@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 23:10:44
+ * @LastEditTime: 2020-06-29 23:14:21
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -301,7 +301,7 @@ int DayListAPI::getUserItem(map<string, string>& urlData)
     {
         setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
     }
-    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"success\",\"more\":" + to_string(more) + ",\"scheduleItems\":[" + items + "]}");
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"success\",\"more\":" + string(1, more) + ",\"scheduleItems\":[" + items + "]}");
     return res;
 }
 
