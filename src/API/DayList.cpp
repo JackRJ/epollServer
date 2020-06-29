@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 21:44:29
+ * @LastEditTime: 2020-06-29 22:03:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -12,6 +12,7 @@
 DayListAPI::DayListAPI(map<string, string>& headers, string& outBuffer):
     headers_(headers),
     outBuffer_(outBuffer),
+    isSetCookie(0),
     user(new DayListUser())
 { }
 
@@ -55,7 +56,10 @@ int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
     outBuffer_ = "HTTP/1.1 " + to_string(res_num) + " "
          + short_msg + "\r\nContent-type: application/json\r\n";
     if (isSetCookie)
+    {
         outBuffer_ += "Set-Cookie: cid = " + cookie_ + "; path = /daylist\r\n";
+        isSetCookie = 0;
+    }
     outBuffer_ += "\r\n";
 
     // body
@@ -120,7 +124,7 @@ int DayListAPI::loginAPI(map<string, string>& bodies, string& header)
     } while (false);
     if (error)
     {
-        this -> setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain correct account and cipher!\"}");
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain correct account and cipher!\"}");
         return 0;
     }
     setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"login success\",\"userId\":"
@@ -215,24 +219,42 @@ int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& use
  */
 int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
 {
-    if (!headers_.count("Cookie"))
-        return -1;
-    if (!bodies.count("userId") || !bodies.count("startTime") 
-        || !bodies.count("endTime") || !bodies.count("describtion"))
-        return -1;
-    if (bodies.count("isAlarm") && !bodies.count("advancedAlarmMintes"))
-        return -1;
-
-    // 验证 cookie 的正确性
-    int userId = atoi(bodies["userId"].c_str());
-    int res = checkCooie(userId, headers_["Cookie"]);
-    if (res != 1)
-        return -1;
+    bool error = 0;
+    do
+    {
+        if (!headers_.count("Cookie") || !bodies.count("userId") || !bodies.count("startTime")
+            || !bodies.count("endTime") || !bodies.count("describtion")
+            || (bodies.count("isAlarm") && !bodies.count("advancedAlarmMintes")))
+        {
+            error = 1;
+            break;
+        }
+        // 验证 cookie 的正确性
+        int userId = atoi(bodies["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
+        if (res != 1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
+            return 0;
+        }
+    } while (false);
+    if (error)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain right params!\"}");
+        return 0;
+    }
     /**
      * to do : 正则匹配判断 startTime 和 endTime 是否符合格式要求
-     */
-    
-    return user -> uploadScheduleItem(bodies);
+     */    
+    int res = user -> uploadScheduleItem(bodies);
+    if (res == 1)
+    {
+        setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"upload success\"}");
+    } else if (res == -1)
+    {
+        setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+    }
+    return res;
 }
 
 /**
