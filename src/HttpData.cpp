@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-29 20:39:34
+ * @LastEditTime: 2020-06-29 21:24:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -449,14 +449,6 @@ AnalysisState HttpData::analysisRequest()
                 int userId = 0;
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int rst = daylistApi -> registeAPI(bodies, header, userId);
-                header += "\r\n";
-                if (rst == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
-                        + std::to_string(userId) +"}";
-                else if (rst == -1) 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account exited\"}";
-                else 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again, maybe params error\"}";
                 return ANALYSIS_SUCCESS;
                 break;
             }
