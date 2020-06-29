@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 22:10:27
+ * @LastEditTime: 2020-06-29 22:19:22
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -232,7 +232,10 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
         // 验证 cookie 的正确性
         int userId = atoi(bodies["userId"].c_str());
         int res = checkCooie(userId, headers_["Cookie"]);
-        if (res != 1)
+        if (res == 0)
+        {
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"cookie is expired, please login again!\"}");
+        } else if (res != 1)
         {
             setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
             return 0;
