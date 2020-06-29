@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 22:20:31
+ * @LastEditTime: 2020-06-29 23:10:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -71,7 +71,7 @@ int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
  * 用户登陆
  * @params:account, cipher
  */
-int DayListAPI::loginAPI(map<string, string>& bodies, string& header)
+int DayListAPI::loginAPI(map<string, string>& bodies)
 {
     bool error = 0;
     int userId = 0;
@@ -136,7 +136,7 @@ int DayListAPI::loginAPI(map<string, string>& bodies, string& header)
  * 用户注册
  * @params:account, cipher
  */
-int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& userId)
+int DayListAPI::registeAPI(map<string, string>& bodies, int& userId)
 {
     bool error = 0;
     do
@@ -234,7 +234,7 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
         int res = checkCooie(userId, headers_["Cookie"]);
         if (res == 0)
         {
-            setOutBuffer(401, "Unauthorized", "{\"error\":\"cookie is expired, please login again!\"}");
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"expired cookie, please login again!\"}");
             return 0;
         } else if (res != 1)
         {
@@ -265,38 +265,89 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
  * 获取用户日程，每次10条
  * @params:userId, page
  */
-int DayListAPI::getUserItem(map<string, string>& urlData, string& items, char& more)
+int DayListAPI::getUserItem(map<string, string>& urlData)
 {
-    if (!headers_.count("Cookie"))
-        return -1;
-    if (!urlData.count("userId") || !urlData.count("page"))
-        return -1;
-
-    // 验证 cookie 的正确性
-    int userId = atoi(urlData["userId"].c_str());
-    int res = checkCooie(userId, headers_["Cookie"]);
-    if (res != 1)
-        return -1;
-    return user -> getUserItem(urlData, items, more);
+    bool error = 0;
+    do
+    {
+        if (!headers_.count("Cookie") || (!urlData.count("userId") || !urlData.count("page")))
+        {
+            error = 1;
+            break;
+        }
+        // 验证 cookie 的正确性
+        int userId = atoi(urlData["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
+        if (res == 0)
+        {
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"expired cookie, please login again!\"}");
+            return 0;
+        } else if (res != 1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
+            return 0;
+        }
+    } while (false);
+    
+    if (error)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain right params!\"}");
+        return 0;
+    }
+    string items;
+    char more;
+    int res = user -> getUserItem(urlData, items, more);
+    if (res == 0)
+    {
+        setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+    }
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"success\",\"more\":" + to_string(more) + ",\"scheduleItems\":[" + items + "]}");
+    return res;
 }
 
 /**
  * 获取用户信息
  */
-int DayListAPI::getUserInformation(map<string, string>& urlData, string& userInformation)
+int DayListAPI::getUserInformation(map<string, string>& urlData)
 {
-    if (!headers_.count("Cookie"))
-        return -1;
-    if (!urlData.count("userId"))
-        return -1;
-
-    // 验证 cookie 的正确性
-    int userId = atoi(urlData["userId"].c_str());
-    int res = checkCooie(userId, headers_["Cookie"]);
-    if (res != 1)
-        return -1;
-
-    return user -> getUserInformation(to_string(userId), userInformation);
+    bool error = 0;
+    do
+    {
+        if (!headers_.count("Cookie") || !urlData.count("userId"))
+        {
+            error = 1;
+            break;
+        }
+        // 验证 cookie 的正确性
+        int userId = atoi(urlData["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
+        if (res == 0)
+        {
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"expired cookie, please login again!\"}");
+            return 0;
+        } else if (res != 1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
+            return 0;
+        }
+        string userInformation;
+        res = user -> getUserInformation(to_string(userId), userInformation);
+        if (res == 0)
+        {
+            setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+            return 0;
+        }
+        setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"success\",\"userInformation\":"
+                    + userInformation + "}");
+        
+    } while (false);
+    
+    if (error)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain right params!\"}");
+        return 0;
+    }
+    return 1;
 }
 
 /**
@@ -304,17 +355,43 @@ int DayListAPI::getUserInformation(map<string, string>& urlData, string& userInf
  */
 int DayListAPI::modifyUserInformation(map<string, string>& bodies)
 {
-    if (!headers_.count("Cookie") || !bodies.count("userId"))
-        return -1;
-    if (bodies.size() < 2)
-        return -1;
-
-    // 验证 cookie 的正确性
-    int userId = atoi(bodies["userId"].c_str());
-    int res = checkCooie(userId, headers_["Cookie"]);
-    if (res != 1)
-        return -1;
-    return user -> modifyUserInformation(bodies);
+    bool error = 0;
+    do
+    {
+        if (!headers_.count("Cookie") || !bodies.count("userId") || bodies.size() < 2)
+        {
+            error = 1;
+            break;
+        }
+        // 验证 cookie 的正确性
+        int userId = atoi(bodies["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
+        if (res == 0)
+        {
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"expired cookie, please login again!\"}");
+            return 0;
+        } else if (res != 1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
+            return 0;
+        }
+    } while (false);
+    
+    if (error)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain right params!\"}");
+        return 0;
+    }
+    int res = user -> modifyUserInformation(bodies);
+    if (res == 0)
+    {
+        setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+    } else if (res == -2)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"account not exicted!\"}");
+    }
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"modify success\"}");
+    return res;
 }
 
 /**
@@ -322,13 +399,41 @@ int DayListAPI::modifyUserInformation(map<string, string>& bodies)
  */
 int DayListAPI::deleteScheduleItem(map<string, string>& bodies)
 {
-    if (!bodies.count("userId") || !bodies.count("scheduleId") || !headers_.count("Cookie"))
-        return -1;
-    // 验证 cookie 的正确性
-    int userId = atoi(bodies["userId"].c_str());
-    int res = checkCooie(userId, headers_["Cookie"]);
-    if (res != 1)
-        return -1;
-    res = user -> deleteScheduleItem(bodies);
+    bool error = 0;
+    do
+    {
+        if (!bodies.count("userId") || !bodies.count("scheduleId") || !headers_.count("Cookie"))
+        {
+            error = 1;
+            break;
+        }
+        // 验证 cookie 的正确性
+        int userId = atoi(bodies["userId"].c_str());
+        int res = checkCooie(userId, headers_["Cookie"]);
+        if (res == 0)
+        {
+            setOutBuffer(401, "Unauthorized", "{\"error\":\"expired cookie, please login again!\"}");
+            return 0;
+        } else if (res != 1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
+            return 0;
+        }
+    } while (false);
+    
+    if (error)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain right params!\"}");
+        return 0;
+    }
+    int res = user -> deleteScheduleItem(bodies);
+    if (res == 0)
+    {
+        setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+    } else if (res == -1)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"schedule not exicted!\"}");
+    }
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"delete success\"}");
     return res;
 }

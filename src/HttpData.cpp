@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-29 22:06:37
+ * @LastEditTime: 2020-06-29 23:10:10
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -416,8 +416,6 @@ AnalysisState HttpData::analysisRequest()
 {
     if (method_ == METHOD_POST)
     {
-        std::string header;
-        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n";
         switch (hash_[url_])
         {
             /**
@@ -427,7 +425,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 this -> parseBody(0);
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                int res = daylistApi -> loginAPI(bodies, header);
+                int res = daylistApi -> loginAPI(bodies);
                 return ANALYSIS_SUCCESS;
                 break;
             }
@@ -439,7 +437,7 @@ AnalysisState HttpData::analysisRequest()
                 this -> parseBody(0);
                 int userId = 0;
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                int rst = daylistApi -> registeAPI(bodies, header, userId);
+                int rst = daylistApi -> registeAPI(bodies, userId);
                 return ANALYSIS_SUCCESS;
                 break;
             }
@@ -463,25 +461,9 @@ AnalysisState HttpData::analysisRequest()
             {
                 // 对中文的url解码
                 // 之后再进行解析请求体
-                header += "\r\n";
                 this -> parseBody(true);
-                if (bodies.empty())
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
-                else 
-                {
-                    shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                    int res = daylistApi -> modifyUserInformation(bodies);
-                    if (res == -1)
-                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
-                    else if (res == 0)
-                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
-                    else if (res == 1)
-                        outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
-                    else if (res == -2)
-                        outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"account not exicted\"}";
-                    else 
-                        break;
-                }
+                shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
+                int res = daylistApi -> modifyUserInformation(bodies);
                 return ANALYSIS_SUCCESS;
             }
             /**
@@ -490,27 +472,15 @@ AnalysisState HttpData::analysisRequest()
             case daylist_deleteScheduleItem:
             {
                 // 之后再进行解析请求体
-                header += "\r\n";
                 this -> parseBody(0);
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int res = daylistApi -> deleteScheduleItem(bodies);
-                if (res == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
-                else if (res == 0)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
-                else if (res == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\"}";
-                else 
-                    break;
                 return ANALYSIS_SUCCESS;
             }
             default: return ANALYSIS_ERROR;
         }
     } else if (method_ == METHOD_GET || method_ == METHOD_HEAD)
     {
-        std::string header;
-        header += "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n";
-
         switch(hash_[url_])
         {
             /**
@@ -518,20 +488,8 @@ AnalysisState HttpData::analysisRequest()
              */
             case daylist_getUserItems:
             {
-                std::string items;
-                char more;
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                int res = daylistApi -> getUserItem(urlData, items, more);
-                if (res == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
-                else if (res == 0)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
-                else if (res == 1)
-                {
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"more\":" + more
-                        + ",\"scheduleItems\":[" + items + "]}";
-                } else 
-                    break;
+                int res = daylistApi -> getUserItem(urlData);
                 return ANALYSIS_SUCCESS;
             }
             /**
@@ -541,16 +499,7 @@ AnalysisState HttpData::analysisRequest()
             {
                 std::string userInformation;
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                int res = daylistApi -> getUserInformation(urlData, userInformation);
-                if (res == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong params\"}";
-                else if (res == 0)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
-                else if (res == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"success\",\"userInformation\":"
-                    + userInformation + "}";
-                else 
-                    break;
+                int res = daylistApi -> getUserInformation(urlData);
                 return ANALYSIS_SUCCESS;
             }
             default: break;
