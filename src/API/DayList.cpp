@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 22:19:22
+ * @LastEditTime: 2020-06-29 22:20:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -235,6 +235,7 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
         if (res == 0)
         {
             setOutBuffer(401, "Unauthorized", "{\"error\":\"cookie is expired, please login again!\"}");
+            return 0;
         } else if (res != 1)
         {
             setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cookie!\"}");
