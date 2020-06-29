@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-29 21:41:51
+ * @LastEditTime: 2020-06-29 22:06:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -453,13 +453,6 @@ AnalysisState HttpData::analysisRequest()
                 this -> parseBody(true);
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
                 int rst = daylistApi -> uploadScheduleItemAPI(bodies);
-                header += "\r\n";
-                if (rst == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"upload success\"}";
-                else if (rst == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"params error\"}";
-                else 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"try again\"}";
                 return ANALYSIS_SUCCESS;
                 break;
             }
