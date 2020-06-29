@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 22:03:54
+ * @LastEditTime: 2020-06-29 22:10:27
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -222,9 +222,9 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
     bool error = 0;
     do
     {
-        if (!headers_.count("Cookie") || !bodies.count("userId") || !bodies.count("startTime")
+        if (!headers_.count("Cookie") || (!bodies.count("userId") || !bodies.count("startTime")
             || !bodies.count("endTime") || !bodies.count("describtion")
-            || (bodies.count("isAlarm") && !bodies.count("advancedAlarmMintes")))
+            || (bodies.count("isAlarm") && !bodies.count("advancedAlarmMintes"))))
         {
             error = 1;
             break;
