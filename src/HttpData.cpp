@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-06-29 21:24:18
+ * @LastEditTime: 2020-06-29 21:41:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -426,17 +426,8 @@ AnalysisState HttpData::analysisRequest()
             case daylist_login : 
             {
                 this -> parseBody(0);
-                int UserId = 0;
                 shared_ptr<DayListAPI> daylistApi(new DayListAPI(headers_, outBuffer_));
-                int res = daylistApi -> loginAPI(bodies, UserId, header);
-                header += "\r\n";
-                if (res == 1)
-                    outBuffer_ = header + "{\"result\":\"1\",\"msg\":\"login success\",\"userId\":"
-                        + std::to_string(UserId) +"}";
-                else if (res == -1)
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"wrong cipher\"}";
-                else 
-                    outBuffer_ = header + "{\"result\":\"0\",\"msg\":\"error, try again\"}";
+                int res = daylistApi -> loginAPI(bodies, header);
                 return ANALYSIS_SUCCESS;
                 break;
             }

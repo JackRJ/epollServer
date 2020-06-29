@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-06-29 21:20:03
+ * @LastEditTime: 2020-06-29 21:44:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -67,38 +67,65 @@ int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
  * 用户登陆
  * @params:account, cipher
  */
-int DayListAPI::loginAPI(map<string, string>& bodies, int& userId, string& header)
+int DayListAPI::loginAPI(map<string, string>& bodies, string& header)
 {
-    // 验证cookie是否正确
-    if (headers_.count("Cookie") && bodies.count("userId"))
+    bool error = 0;
+    int userId = 0;
+    do
     {
-        userId = atoi(bodies["userId"].c_str());
-        int res = checkCooie(userId, headers_["Cookie"]);
-        // 此时数据库 cookie 有此项，并且请求报文有 cookie 
-        if (res == 1)
+        // 验证cookie是否正确
+        if (headers_.count("Cookie") && bodies.count("userId"))
         {
-            header += "Set-Cookie: cid = " + headers_["Cookie"] + "; path = /daylist\r\n";
-            return 1;
-        } else if (res == 0)
-        {
-            user -> deleteCookie(userId);
+            userId = atoi(bodies["userId"].c_str());
+            int res = checkCooie(userId, headers_["Cookie"]);
+            // 此时数据库 cookie 有此项，并且请求报文有 cookie 
+            if (res == 1)
+            {
+                isSetCookie = 1;
+                cookie_ = headers_["Cookie"];
+                break;
+            } else if (res == 0)
+            {
+                user -> deleteCookie(userId);
+            }
         }
-    }
-    if (!bodies.count("account") || !bodies.count("cipher"))
-        return -1;
-    // 验证账号密码长度是否符合要求
-    int len = bodies["account"].size();
-    if (len != 10 || (bodies["cipher"].size() < 8 || bodies["cipher"].size() > 20))
-        return -1;
-    
-    int result = user -> login(bodies, userId);
-    if (result == 1)
+        if (!bodies.count("account") || !bodies.count("cipher"))
+        {
+            error = 1;
+            break;
+        }
+        // 验证账号密码长度是否符合要求
+        int accountLen = bodies["account"].size();
+        int cipherLen = bodies["cipher"].size();
+        if (accountLen != 10 || (cipherLen < 8 || cipherLen > 20))
+        {
+            error = 1;
+            break;
+        }
+        int result = user -> login(bodies, userId);
+        if (result == 1)
+        {
+            cookie_ = to_string(rand() % (100000000));
+            user -> updateCookie(userId, cookie_);
+            isSetCookie = 1;
+        } else if (result == 0)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"account not exicted!\"}");
+            return 0;
+        } else if (result == -1)
+        {
+            setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong cipher!\"}");
+            return 0;
+        }
+    } while (false);
+    if (error)
     {
-        string cid = to_string(rand() % (100000000));
-        user -> updateCookie(userId, cid);
-        header += "Set-Cookie: cid = " + cid + "; path = /daylist\r\n";
+        this -> setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain correct account and cipher!\"}");
+        return 0;
     }
-    return result;
+    setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"login success\",\"userId\":"
+                        + std::to_string(userId) +"}");
+    return 1;
 }
 
 /**
@@ -151,7 +178,7 @@ int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& use
     
     if (error)
     {
-        this -> setOutBuffer(400, "INVALID REQUEST", "\"error\":\"request must contain correct account and cipher!\"");
+        this -> setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"request must contain correct account and cipher!\"}");
         return 0;
     }
     
@@ -161,7 +188,7 @@ int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& use
         int id = user -> getUserId(bodies["account"]);
         if (id == -1)
         {
-            this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "\"error\":\"mysql error, try again!\"");
+            this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
             return -1;
         }
         isSetCookie = 1;
@@ -170,11 +197,11 @@ int DayListAPI::registeAPI(map<string, string>& bodies, string& header, int& use
         userId = user -> getUserId(bodies["account"]);
     } else if (ans == -1)
     {
-        setOutBuffer(400, "INVALID REQUEST", "\"error\":\"account exited!\"");
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"account exited!\"}");
         return -1;
     } else if (ans == 0)
     {
-        this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "\"error\":\"mysql error, try again!\"");
+        this -> setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
         return 0;
     }
     setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"registe success\",\"userId\":"

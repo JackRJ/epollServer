@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-28 18:07:05
+ * @LastEditTime: 2020-06-29 21:38:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -108,7 +108,6 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
         printf("mysql params error\n");
         return 0;
     }
-    printf("mysql params success\n");
     std::string str = "select * from User where account = '" + bodies["account"] + "'";
     int res = mysql_query(&conn, str.c_str());
     if (res)
@@ -118,9 +117,9 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
     }
     result = mysql_store_result(&conn);
     MYSQL_ROW row = mysql_fetch_row(result);
+    // account not exicted
     if (!row)
     {
-        printf("!row\n");
         return 0;
     }
     int id = 0;
@@ -133,7 +132,6 @@ int DayListUser::login(std::map<std::string, std::string>& bodies, int& userId)
         userId = id;
         return 1;
     }
-    printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
     return -1;
 }
 
