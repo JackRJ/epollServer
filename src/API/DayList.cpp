@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-01 16:23:20
+ * @LastEditTime: 2020-07-01 16:30:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -43,19 +43,26 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     // 判断时间是否在三天之内
     double diff = difftime(mktime(cur), mktime(&last));
 
-    // 获取 cookie 数据里面的 cid
-    auto pos = cookie.find("cid");
-    if (pos == cookie.npos)
-        return -1;
-    int count = 0;
-    pos += 4;
-    while (pos + count < cookie.size() && cookie[pos + count] >= '0' && cookie[pos + count] <= '9')
-        ++count;
-    if (diff < 86400 * 3 && vec[2] == cookie.substr(pos, count))
+    
+    if (diff < 86400 * 3 && vec[2] == getCookie(cookie))
         return 1;
     else if (diff >= 86400 * 3)
         return 0;
     return -1;
+}
+
+string DayListAPI::getCookie(const string& cookie_in_header)
+{
+    // 获取 cookie 数据里面的 cid
+    auto pos = cookie_in_header.find("cid");
+    if (pos == cookie_in_header.npos)
+        return "";
+    int count = 0;
+    pos += 4;
+    while (pos + count < cookie_in_header.size() && cookie_in_header[pos + count] >= '0' 
+        && cookie_in_header[pos + count] <= '9')
+        ++count;
+    return cookie_in_header.substr(pos, count);
 }
 
 int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
@@ -65,7 +72,8 @@ int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
          + short_msg + "\r\nContent-type: application/json\r\n";
     if (isSetCookie)
     {
-        outBuffer_ += "Set-Cookie: " + cookie_ + "; path = /daylist\r\n";
+
+        outBuffer_ += "Set-Cookie: cid = " + cookie_ + "; path = /daylist\r\n";
         isSetCookie = 0;
     }
     outBuffer_ += "\r\n";
@@ -94,7 +102,7 @@ int DayListAPI::loginAPI(map<string, string>& bodies)
             if (res == 1)
             {
                 isSetCookie = 1;
-                cookie_ = headers_["Cookie"];
+                cookie_ = getCookie(headers_["Cookie"]);
                 break;
             } else if (res == 0)
             {
