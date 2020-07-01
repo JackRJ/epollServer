@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-06-29 21:38:03
+ * @LastEditTime: 2020-07-01 23:24:17
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -192,6 +192,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
 
     int res = mysql_query(&conn, str.c_str());
+    
     if (res)
     {
         printf("mysql error\n");
@@ -199,6 +200,21 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     }
     my_ulonglong affected_row = mysql_affected_rows(&conn);
     printf("%d rows affected.\n", (int)affected_row);
+    str = "select last_insert_id()";
+    res = mysql_query(&conn, str.c_str());
+    if (res)
+    {
+        printf("mysql error\n");
+        return 0;
+    }
+    // 获取结果
+    result = mysql_store_result(&conn);
+    MYSQL_ROW row = mysql_fetch_row(result);
+    while (row != NULL)
+    {
+        printf("row : %s\n", row[0]);
+        row = mysql_fetch_row(result);
+    }
     return 1;
 }
 

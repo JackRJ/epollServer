@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-18 09:09:16
- * @LastEditTime: 2020-06-28 17:51:06
+ * @LastEditTime: 2020-07-01 22:48:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/api/daylist.api.js
@@ -84,7 +84,8 @@ class UserAPI
         res: 
         {
             result: String,
-            msg: String
+            msg: String,
+            scheduleId: Number
         }
     }
 
