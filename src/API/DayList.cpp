@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-01 15:47:58
+ * @LastEditTime: 2020-07-01 15:51:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -48,7 +48,7 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     if (pos == cookie.npos)
         return -1;
     int count = 0;
-    ++pos;
+    pos += 4;
     while (pos + count < cookie.size() && cookie[pos + count] >= '0' && cookie[pos + count] <= '9')
         ++count;
     printf("%s\n", cookie.substr(pos, count).c_str());
