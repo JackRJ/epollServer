@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-01 23:35:42
+ * @LastEditTime: 2020-07-01 23:37:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -267,7 +267,6 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
      * to do : 正则匹配判断 startTime 和 endTime 是否符合格式要求
      */    
     int res = user -> uploadScheduleItem(bodies);
-    printf("sid: %i\n", res);
     if (res > 0)
     {
         setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"upload success\",\"scheduleId\":" 
