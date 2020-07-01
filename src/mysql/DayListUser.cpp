@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-07-01 23:24:17
+ * @LastEditTime: 2020-07-01 23:33:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -210,12 +210,15 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     // 获取结果
     result = mysql_store_result(&conn);
     MYSQL_ROW row = mysql_fetch_row(result);
-    while (row != NULL)
+    char* sid = row[0];
+    res = 0;
+    int count = strlen(sid);
+    while (count--)
     {
-        printf("row : %s\n", row[0]);
-        row = mysql_fetch_row(result);
+        res = res * 10 + (*sid - '0');
+        ++sid;
     }
-    return 1;
+    return res;
 }
 
 /**
