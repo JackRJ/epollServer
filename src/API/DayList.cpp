@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-01 15:51:34
+ * @LastEditTime: 2020-07-01 16:23:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -51,7 +51,6 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     pos += 4;
     while (pos + count < cookie.size() && cookie[pos + count] >= '0' && cookie[pos + count] <= '9')
         ++count;
-    printf("%s\n", cookie.substr(pos, count).c_str());
     if (diff < 86400 * 3 && vec[2] == cookie.substr(pos, count))
         return 1;
     else if (diff >= 86400 * 3)
@@ -66,7 +65,7 @@ int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
          + short_msg + "\r\nContent-type: application/json\r\n";
     if (isSetCookie)
     {
-        outBuffer_ += "Set-Cookie: cid = " + cookie_ + "; path = /daylist\r\n";
+        outBuffer_ += "Set-Cookie: " + cookie_ + "; path = /daylist\r\n";
         isSetCookie = 0;
     }
     outBuffer_ += "\r\n";
