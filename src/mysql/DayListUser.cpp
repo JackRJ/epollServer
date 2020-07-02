@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-07-01 23:33:54
+ * @LastEditTime: 2020-07-02 22:12:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -311,6 +311,10 @@ int DayListUser::getUserInformation(const std::string& userId, std::string& user
         field = mysql_fetch_field_direct(result,i);
         userInformation += ("\"" + vec[i] + "\":\"");
         userInformation += row[i];
+        if (i == 5 || i == 6)
+        {
+            userInformation.resize(userInformation.size() - 3);
+        }
         userInformation += "\",";
     }
     userInformation.pop_back();
