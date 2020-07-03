@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-07-03 13:20:23
+ * @LastEditTime: 2020-07-03 13:21:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -214,7 +214,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
              + ", endTime = " + endTime
              + ", location = " + location
              + "where sid = " + item["scheduleId"] + ";";
-        int res = mysql_query(&conn, str.c_str());
+        res = mysql_query(&conn, str.c_str());
         if (res)
         {
             printf("mysql error\n");
