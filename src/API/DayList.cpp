@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-01 23:37:07
+ * @LastEditTime: 2020-07-03 13:39:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -106,7 +106,10 @@ int DayListAPI::loginAPI(map<string, string>& bodies)
                 break;
             } else if (res == 0)
             {
+                //  expired
+                setOutBuffer(401, "Unauthorized", "{\"error\":\"cookie expired!\"}");
                 user -> deleteCookie(userId);
+                return 0;
             }
         }
         if (!bodies.count("account") || !bodies.count("cipher"))
