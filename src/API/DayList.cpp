@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-03 13:51:56
+ * @LastEditTime: 2020-07-03 18:23:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -273,9 +273,12 @@ int DayListAPI::uploadScheduleItemAPI(map<string, string>& bodies)
     {
         setOutBuffer(200, "OK", "{\"status\":\"1\",\"msg\":\"upload success\",\"scheduleId\":" 
             + to_string(res) + "}");
-    } else if (res == -1)
+    } else if (res == 0)
     {
         setOutBuffer(500, "INTERNAL SERVER ERROR", "{\"error\":\"mysql error, try again!\"}");
+    } else if (res == -1)
+    {
+        setOutBuffer(400, "INVALID REQUEST", "{\"error\":\"wrong scheduleId!\"}");
     }
     return res;
 }
