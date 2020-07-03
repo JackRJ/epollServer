@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-07-03 13:21:31
+ * @LastEditTime: 2020-07-03 13:26:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -208,11 +208,11 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
         }
         str = "update schedule set isAlarm = " + isAlarm
              + ", advancedAlarmMintes = " + advancedAlarmMintes
-             + ", describtion" + describtion
-             + ", remarks = " + remarks
-             + ", startTime = " + startTime
-             + ", endTime = " + endTime
-             + ", location = " + location
+             + ", describtion = '" + describtion + "'"
+             + ", remarks = '" + remarks + "'"
+             + ", startTime = '" + startTime + "'"
+             + ", endTime = '" + endTime + "'"
+             + ", location = '" + location + "'"
              + "where sid = " + item["scheduleId"] + ";";
         res = mysql_query(&conn, str.c_str());
         if (res)
