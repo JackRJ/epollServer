@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-03 13:44:45
+ * @LastEditTime: 2020-07-03 13:51:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -42,11 +42,10 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     // 转换结构体为time_t,利用difftime,计算时间差  
     // 判断时间是否在三天之内
     double diff = difftime(mktime(cur), mktime(&last));
-
     
     if (diff < 86400 * 3 && vec[2] == getCookie(cookie))
         return 1;
-    else if (diff >= 86400 * 3)
+    else if (diff >= 86400 * 3 && vec[2] == getCookie(cookie))
         return 0;
     return -1;
 }
@@ -104,7 +103,7 @@ int DayListAPI::loginAPI(map<string, string>& bodies)
                 isSetCookie = 1;
                 cookie_ = getCookie(headers_["Cookie"]);
                 break;
-            } else
+            } else if (!(bodies.count("account") && bodies.count("cipher")))
             {
                 //  expired
                 setOutBuffer(401, "Unauthorized", "{\"error\":\"cookie expired!\"}");
