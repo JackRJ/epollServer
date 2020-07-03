@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 17:34:27
- * @LastEditTime: 2020-07-02 22:17:19
+ * @LastEditTime: 2020-07-03 13:20:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/mysql/DayListUser.cpp
@@ -178,6 +178,7 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
         return -1;
     if (item.count("isAlarm") && !item.count("advancedAlarmMintes"))
         return -1;
+
     std::string isAlarm = item.count("isAlarm") ? "1" : "0";
     std::string& userId = item["userId"];
     std::string& startTime = item["startTime"];
@@ -186,13 +187,47 @@ int DayListUser::uploadScheduleItem(std::map<std::string, std::string>& item)
     std::string advancedAlarmMintes = item.count("isAlarm") ? item["advancedAlarmMintes"] : "";
     std::string remarks = item.count("remarks") ? item["remarks"] : "";
     std::string location = item.count("location") ? item["location"] : "";
+    std::string str;
+    bool excited = item.count("scheduleId");
+    if (excited)
+    {
+        // schedule excited
+        str = "select * from schedule where sid = " + item["scheduleId"] + ";";
+        int res = mysql_query(&conn, str.c_str());
+        if (res)
+        {
+            printf("mysql error\n");
+            return 0;
+        }
+        result = mysql_store_result(&conn);
+        int rowcount = mysql_num_rows(result);
+        if (rowcount != 1)
+        {
+            printf("wrong schedule\n");
+            return -1;
+        }
+        str = "update schedule set isAlarm = " + isAlarm
+             + ", advancedAlarmMintes = " + advancedAlarmMintes
+             + ", describtion" + describtion
+             + ", remarks = " + remarks
+             + ", startTime = " + startTime
+             + ", endTime = " + endTime
+             + ", location = " + location
+             + "where sid = " + item["scheduleId"] + ";";
+        int res = mysql_query(&conn, str.c_str());
+        if (res)
+        {
+            printf("mysql error\n");
+            return 0;
+        }
+        return atoi(item["scheduleId"].c_str());
+    }
 
-    std::string str = "insert into schedule (userId, isAlarm, advancedAlarmMintes, describtion, remarks, startTime, endTime, location) values ("
+    str = "insert into schedule (userId, isAlarm, advancedAlarmMintes, describtion, remarks, startTime, endTime, location) values ("
     + userId + ", " + isAlarm + ", " + advancedAlarmMintes + ", '"
     + describtion + "', '" + remarks + "', '" + startTime + "', '" + endTime + "', '" + location + "');";
 
     int res = mysql_query(&conn, str.c_str());
-    
     if (res)
     {
         printf("mysql error\n");
@@ -271,6 +306,7 @@ int DayListUser::getUserItem(std::map<std::string, std::string>& urlData, std::s
             field = mysql_fetch_field_direct(result,i);
             items += ("\"" + vec[i] + "\":\"");
             items += std::string(row[i]);
+            // startTime and endTime
             if (i == 5 || i == 4)
                 items.resize(items.size() - 3);
             items += "\",";
