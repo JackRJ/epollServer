@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-07-05 16:26:13
+ * @LastEditTime: 2020-07-05 16:38:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -530,7 +530,7 @@ void HttpData::handleError(int err_num, std::string short_msg)
     header_buff += "Content-Type: text/html\r\n";
     header_buff += "Connection: Close\r\n";
     header_buff += "Content-Length: " + std::to_string(body_buff.size()) + "\r\n";
-    header_buff += "Server: LinYa's Web Server\r\n";;
+    header_buff += "Server: RJ's Web Server\r\n";
     header_buff += "\r\n";
 
     // 错误处理不考虑writen不完的情况
