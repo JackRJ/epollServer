@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-06-04 10:54:26
+ * @LastEditTime: 2020-07-05 16:44:01
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -175,74 +175,3 @@ void worker(std::shared_ptr<void> args)
     HttpData httpData(args_ -> client);
     httpData.startup();
 }
-
-/*int login(std::map<std::string, std::string>& bodies)
-{
-    MYSQL conn;
-    MYSQL_RES *result = NULL;
-    MYSQL_FIELD *field = NULL;
-    mysql_init(&conn);
-    auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
-    if (!bodies.count("account") || !bodies.count("cipher"))
-    {
-        printf("params error\n");
-        return 0;
-    }
-    printf("params success\n");
-    std::string str = "select cipher from User where account = '" + bodies["account"] + "'";
-    int res = mysql_query(&conn, str.c_str());
-    if (res)
-    {
-        printf("mysql error\n");
-        return 0;
-    }
-    result = mysql_store_result(&conn);
-    MYSQL_ROW row = mysql_fetch_row(result);
-    if (!row)
-    {
-        printf("!row\n");
-        return 0;
-    }
-    if (bodies["cipher"] == std::string(row[0]))
-        return 1;
-    printf("not equ: %s %s\n", bodies["cipher"].c_str(), row[0]);
-    return 0;
-    mysql_close(&conn);
-}
-
-int registe(std::string account, std::string cipher)
-{
-    MYSQL conn;
-    MYSQL_RES *result = NULL;
-    MYSQL_FIELD *field = NULL;
-    mysql_init(&conn);
-    auto tmp = mysql_real_connect(&conn, "localhost", "jack", "lovezrj", "day_list_user",0,NULL, CLIENT_FOUND_ROWS);
-    // to do 查重
-    std::string str = "select * from User where account = '" + account + "'";
-    int res = mysql_query(&conn, str.c_str());
-    if (res)
-    {
-        printf("mysql error\n");
-        return 0;
-    }
-    result = mysql_store_result(&conn);
-    int rowcount = mysql_num_rows(result);
-    if (rowcount != 0)
-    {
-        printf("account exited\n");
-        return 0;
-    }
-    
-    str = "insert into User (name, sex, age, cipher, account) values ('***', 0, 20, '" 
-            + cipher + "','" + account + "');";
-    res = mysql_query(&conn, str.c_str());
-    if (res)
-    {
-        printf("mysql error\n");
-        return 0;
-    }
-    my_ulonglong affected_row = mysql_affected_rows(&conn);
-    printf("%d rows affected.\n", (int)affected_row);
-    return 1;
-    mysql_close(&conn);
-}*/
