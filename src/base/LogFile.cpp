@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-06-24 18:04:22
- * @LastEditTime: 2020-06-24 18:10:32
+ * @LastEditTime: 2020-07-05 16:06:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/base/LogFile.cpp
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-LogFile::LogFile(const std::string& basename, int flushEveryN = 1024):
+LogFile::LogFile(const std::string& basename, int flushEveryN):
     basename_(basename),
     flushEveryN_(flushEveryN),
     mutex_(new MutexLock),

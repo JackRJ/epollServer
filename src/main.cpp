@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-06-26 21:00:16
+ * @LastEditTime: 2020-07-05 16:23:31
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
  */
 #include "Util.h"
 #include "ThreadPool.h"
+#include "base/Logging.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -34,6 +35,14 @@ int main()
     // struct sockaddr_in serveraddr;
     socklen_t clilen = sizeof(clientaddr);
 
+    std::string logPath = "loger.txt";
+    Logger::setLogFileName(logPath);
+    // STL库在多线程上应用
+    #ifndef _PTHREADS
+        LOG << "_PTHREADS is not defined !";
+    #endif
+
+    
     // 创建线程池 RAII
     std::shared_ptr<ThreadPool> threadPool(new ThreadPool());
     threadPool -> threadpool_create(THREAD_NUMBERS, QUEUE_SIZE);
@@ -55,10 +64,7 @@ int main()
     epoll_ctl(epfd, EPOLL_CTL_ADD, listenfd, &ev);
 
     maxi = 0;
-    {
-        AppendFile a("loger.txt");
-    a.append("textssssssssssssssssssss", 20);
-    }
+
     srand(time(0));
     while (1)
     {

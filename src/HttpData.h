@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:00
- * @LastEditTime: 2020-06-28 17:49:13
+ * @LastEditTime: 2020-07-05 16:27:33
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.h
@@ -10,6 +10,7 @@
 #include "Util.h"
 //#include "mysql/DayListUser.h"
 #include "API/DayList.h"
+#include "base/Logging.h"
 #include "base/UrlTranslation.h"
 #include <map>
 #include <string>

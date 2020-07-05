@@ -1,5 +1,6 @@
 PP = g++
-OBJ := main.o Util.o ThreadPool.o HttpData.o DayList.o DayListUser.o UrlTranslation.o FileUtil.o LogFile.o
+OBJ := main.o Util.o ThreadPool.o HttpData.o DayList.o DayListUser.o UrlTranslation.o \
+FileUtil.o LogFile.o LogStream.o CountDownLatch.o Thread.o Logging.o AsyncLogging.o
 
 PTHREAD := -pthread
 WALL = -Wall
