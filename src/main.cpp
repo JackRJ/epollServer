@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-07-12 22:37:56
+ * @LastEditTime: 2020-07-12 22:50:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -21,8 +21,8 @@
 #include "base/FileUtil.h"
 
 #define SERV_PORT 8006
-#define THREAD_NUMBERS 10
-#define QUEUE_SIZE 1000
+#define THREAD_NUMBERS 20
+#define QUEUE_SIZE 1500
 
 int epfd;
 // 声明epoll_event结构体的变量,ev用于注册事件,数组用于回传要处理的事件
