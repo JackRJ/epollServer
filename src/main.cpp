@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-07-12 22:33:44
+ * @LastEditTime: 2020-07-12 22:37:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -21,7 +21,7 @@
 #include "base/FileUtil.h"
 
 #define SERV_PORT 8006
-#define THREAD_NUMBERS 4
+#define THREAD_NUMBERS 10
 #define QUEUE_SIZE 1000
 
 int epfd;
