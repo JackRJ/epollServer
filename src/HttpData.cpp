@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-07-05 16:38:01
+ * @LastEditTime: 2020-07-12 17:48:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -508,9 +508,9 @@ AnalysisState HttpData::analysisRequest()
         // test
         if (url_ == "hello")
         {
-            printf("fileName: %s\n", url_.c_str());
-            std::string str = "{\"result\" : 1, \"msg\" : success}\r\n\r\n";
-            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: application/json\r\nset-cookie: KLBRSID=5430ad6ccb1a51f38ac194049bce5dfe|1593066470|1593064328; Path=/\r\n\r\n" + str;
+            // printf("fileName: %s\n", url_.c_str());
+            std::string str = "{\"rst\" : 1, \"msg\" : scs}\r\n\r\n";
+            outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n" + str;
             return ANALYSIS_SUCCESS;
         }
     }
