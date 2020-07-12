@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-07-12 22:46:05
+ * @LastEditTime: 2020-07-12 23:26:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -53,7 +53,7 @@ void HttpData::handleRead()
 {
     bool zero = false;
     int readNum = readn(fd_, inBuffer_, zero);
-    // LOG << "Request: " << inBuffer_;
+    LOG << "Request: " << inBuffer_;
     do
     {
         if (readNum < 0)
@@ -79,7 +79,7 @@ void HttpData::handleRead()
                 else if (flag == PARSE_URI_ERROR)
                 {
                     perror("parse url error");
-                    // LOG << "FD = " << fd_ << "," << inBuffer_ << "******";
+                    LOG << "FD = " << fd_ << "," << inBuffer_ << "******";
                     inBuffer_.clear();
                     error_ = true;
                     handleError(400, "BAD REQUEST");
