@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-17 21:44:09
- * @LastEditTime: 2020-07-12 17:48:20
+ * @LastEditTime: 2020-07-12 22:40:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/src/HttpData.cpp
@@ -509,7 +509,7 @@ AnalysisState HttpData::analysisRequest()
         if (url_ == "hello")
         {
             // printf("fileName: %s\n", url_.c_str());
-            std::string str = "{\"rst\" : 1, \"msg\" : scs}\r\n\r\n";
+            std::string str = "{\"r\" : 1, \"msg\" : s}\r\n\r\n";
             outBuffer_ = "HTTP/1.1 200 OK\r\nContent-type: application/json\r\n\r\n" + str;
             return ANALYSIS_SUCCESS;
         }
