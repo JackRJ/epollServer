@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-08-02 17:16:16
+ * @LastEditTime: 2020-08-02 17:19:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -42,6 +42,7 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
             this_cookie = redis_data.substr(0, pos);
             data = redis_data.substr(pos + 1);
             redis_get = true;
+            printf("cookie data: %s\n", redis_data.c_str());
         }
     }
     // redis not get cookie, find from mysql
