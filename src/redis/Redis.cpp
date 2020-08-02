@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-08-02 15:03:13
- * @LastEditTime: 2020-08-02 16:07:45
+ * @LastEditTime: 2020-08-02 16:39:42
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /redis/redis.cpp
@@ -10,18 +10,42 @@
 #include <iostream>
 #include "Redis.h"
 
-int main()
+
+redis::redis():
+    _connect(NULL),
+    _reply(NULL)
+{}
+
+/**
+ * connect to redis
+ */
+bool redis::connect(std::string host, int port)
 {
-    redis* r = new redis();
-    bool res = r -> connect("127.0.0.1", 6379);
-    std::cout << res << std::endl;
-    if (!res)
+    this -> _connect = redisConnect(host.c_str(), port);
+    if(this->_connect != NULL && this->_connect->err)
     {
-        printf("main error\n");
+        printf("connect error : %s!\n", this -> _connect -> errstr);
         return 0;
     }
-    r -> set("name", "andy");
-    printf("get name is %s\n", r -> get("name").c_str());
-    delete r;
-    return 0;
+    printf("redis connect successfully!\n");
+    return 1;
+}
+
+/**
+ * set key val data into redis
+ */
+void redis::set_key_val(const std::string& key, const std::string& value)
+{
+    redisCommand(this -> _connect, "SET %s %s", key.c_str(), value.c_str());
+}
+
+/**
+ * get key val data from redis
+ */
+std::string redis::get_key_val(const std::string& key)
+{
+    this -> _reply = (redisReply*)redisCommand(this->_connect, "GET %s", key.c_str());
+    std::string str = this -> _reply -> str;
+    freeReplyObject(this -> _reply);
+    return str;
 }

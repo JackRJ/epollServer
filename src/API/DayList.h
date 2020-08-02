@@ -1,13 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:49:09
- * @LastEditTime: 2020-07-01 16:27:30
+ * @LastEditTime: 2020-08-02 16:54:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Ed
  * @FilePath: /try/src/API/DayListUser.h
  */ 
 #pragma once
 #include "../mysql/DayListUser.h"
+#include "../redis/Redis.h"
 #include <time.h>
 #include <map>
 #include <string>
@@ -17,6 +18,12 @@ using namespace std;
 class DayListAPI
 {
 private:
+    // cache redis
+    shared_ptr<redis> myRedis;
+    bool redis_connected;
+    const char* redis_ip = "127.0.0.1";
+    const short redis_port = 6379;
+    // user
     shared_ptr<DayListUser> user;
     // http 请求头数据
     map<string, string>& headers_;
@@ -29,6 +36,8 @@ private:
     int checkCooie(const int& userId, const string& cookie);
     int setOutBuffer(int res_num, string short_msg, string msg);
     string getCookie(const string& cookie_in_header);
+    string getCurrentTime();
+    
 public:
     DayListAPI(map<string, string>& headers, string& outBuffer);
     ~DayListAPI();

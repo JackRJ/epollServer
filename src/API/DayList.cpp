@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-07-03 18:23:51
+ * @LastEditTime: 2020-08-02 16:56:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -13,8 +13,16 @@ DayListAPI::DayListAPI(map<string, string>& headers, string& outBuffer):
     headers_(headers),
     outBuffer_(outBuffer),
     isSetCookie(0),
-    user(new DayListUser())
-{ }
+    user(new DayListUser()),
+    myRedis(new redis()),
+    redis_connected(false)
+{ 
+    redis_connected = myRedis -> connect(redis_ip, redis_port);
+    if (!redis_connected)
+    {
+        printf("redis connect error!\n");
+    }
+}
 
 DayListAPI::~DayListAPI()
 { }
@@ -64,6 +72,18 @@ string DayListAPI::getCookie(const string& cookie_in_header)
     return cookie_in_header.substr(pos, count);
 }
 
+string DayListAPI::getCurrentTime()
+{
+    time_t timep;
+    time (&timep);
+    char tmp[64];
+    strftime(tmp, sizeof(tmp), "%Y-%m-%d %H:%M:%S",localtime(&timep) );
+    return tmp;
+}
+
+/**
+ * set the http data
+ */
 int DayListAPI::setOutBuffer(int res_num, string short_msg, string msg)
 {
     // header
@@ -129,6 +149,7 @@ int DayListAPI::loginAPI(map<string, string>& bodies)
         {
             cookie_ = to_string(rand() % (100000000));
             user -> updateCookie(userId, cookie_);
+            myRedis -> set_key_val(to_string(userId), cookie_ + "#" + getCurrentTime());
             isSetCookie = 1;
         } else if (result == 0)
         {
@@ -216,6 +237,7 @@ int DayListAPI::registeAPI(map<string, string>& bodies, int& userId)
         isSetCookie = 1;
         cookie_ = to_string(rand() % (100000000));
         user -> updateCookie(id, cookie_);
+        myRedis -> set_key_val(to_string(userId), cookie_ + "#" + getCurrentTime());
         userId = user -> getUserId(bodies["account"]);
     } else if (ans == -1)
     {

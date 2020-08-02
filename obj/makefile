@@ -1,2 +1,2 @@
 $(BIN_DIR)/$(BIN) : $(OBJ)
-	$(PP) $(PTHREAD) $(CFLAGS) $^ -o $@ $(LIBS)
+	$(PP) $(PTHREAD) $(CFLAGS) $^ -o $@ $(LIBS) $(REDIS)
