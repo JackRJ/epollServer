@@ -25,7 +25,7 @@ public:
 
     bool connect(std::string host, int port);
 
-    void set_key_val(const std::string& key, const std::string& value);
+    int set_key_val(const std::string& key, const std::string& value);
 
     std::string get_key_val(const std::string& key);
 };

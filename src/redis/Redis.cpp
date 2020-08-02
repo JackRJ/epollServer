@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-08-02 15:03:13
- * @LastEditTime: 2020-08-02 16:39:42
+ * @LastEditTime: 2020-08-02 17:10:13
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /redis/redis.cpp
@@ -34,9 +34,15 @@ bool redis::connect(std::string host, int port)
 /**
  * set key val data into redis
  */
-void redis::set_key_val(const std::string& key, const std::string& value)
+int redis::set_key_val(const std::string& key, const std::string& value)
 {
-    redisCommand(this -> _connect, "SET %s %s", key.c_str(), value.c_str());
+    redisReply* res = (redisReply*)redisCommand(this -> _connect, "SET %s %s", key.c_str(), value.c_str());
+    if (NULL == res)
+    {
+        printf("redis set failure!\n");
+        return 0;
+    }
+    return 1;
 }
 
 /**

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-18 21:47:43
- * @LastEditTime: 2020-08-02 16:56:56
+ * @LastEditTime: 2020-08-02 17:16:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/API/DayListUser.cpp
@@ -29,11 +29,32 @@ DayListAPI::~DayListAPI()
 
 int DayListAPI::checkCooie(const int& userId, const string& cookie)
 {
-    auto vec = user -> getCookie(userId);
-    if (vec.empty())
-        return -1;
-    // 获取数据库 cookie 时间
-    string data = vec.at(3);
+    string data;
+    string this_cookie;
+    bool redis_get = false;
+    // redis connected find cookie from redis
+    if (redis_connected)
+    {
+        string redis_data = myRedis -> get_key_val(to_string(userId));
+        if (!redis_data.empty())
+        {
+            int pos = redis_data.find('#');
+            this_cookie = redis_data.substr(0, pos);
+            data = redis_data.substr(pos + 1);
+            redis_get = true;
+        }
+    }
+    // redis not get cookie, find from mysql
+    if (!redis_get)
+    {
+        auto vec = user -> getCookie(userId);
+        if (vec.empty())
+            return -1;
+        // 获取数据库 cookie 时间
+        data = vec.at(3);
+        this_cookie = vec[2];
+    }
+    
     // 获取当前时间
     time_t timep;
     struct tm *cur;
@@ -51,13 +72,16 @@ int DayListAPI::checkCooie(const int& userId, const string& cookie)
     // 判断时间是否在三天之内
     double diff = difftime(mktime(cur), mktime(&last));
     
-    if (diff < 86400 * 3 && vec[2] == getCookie(cookie))
+    if (diff < 86400 * 3 && this_cookie == getCookie(cookie))
         return 1;
-    else if (diff >= 86400 * 3 && vec[2] == getCookie(cookie))
+    else if (diff >= 86400 * 3 && this_cookie == getCookie(cookie))
         return 0;
     return -1;
 }
 
+/**
+ * get cookie from http header
+ */
 string DayListAPI::getCookie(const string& cookie_in_header)
 {
     // 获取 cookie 数据里面的 cid
