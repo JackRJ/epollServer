@@ -1,5 +1,2 @@
-redis: redis.cpp redis.h
-	g++ redis.cpp -o redis -L/usr/local/lib/ -lhiredis
-
-clean:
-	rm redis
+$(OBJ_DIR)/Redis.o: Redis.cpp Redis.h
+	$(PP) -c $< -o $@ $(REDIS)

@@ -1,10 +1,11 @@
 PP = g++
 OBJ := main.o Util.o ThreadPool.o HttpData.o DayList.o DayListUser.o UrlTranslation.o \
-FileUtil.o LogFile.o LogStream.o CountDownLatch.o Thread.o Logging.o AsyncLogging.o
+FileUtil.o LogFile.o LogStream.o CountDownLatch.o Thread.o Logging.o AsyncLogging.o Redis.o
 
 PTHREAD := -pthread
 WALL = -Wall
 MYSQL = `mysql_config --cflags --libs`
+REDIS = -L/usr/local/lib/ -lhiredis
 LIBS = $(shell mysql_config --libs)
 CFLAGS = $(shell mysql_config --cflags)
 
@@ -14,10 +15,11 @@ BIN_DIR := $(TOP_DIR)/bin
 BIN := main
 SUB_DIR := src \
 			src/mysql \
+			src/redis \
 			src/API \
 			src/base \
 			obj
-export PP SRC INCLUDE OBJ PTHREAD MYSQL TOP_DIR OBJ_DIR BIN_DIR BIN WALL LIBS CFLAGS
+export PP SRC INCLUDE OBJ PTHREAD MYSQL TOP_DIR OBJ_DIR BIN_DIR BIN WALL LIBS CFLAGS REDIS
 
 all : CHECKDIR $(SUB_DIR)
 CHECKDIR : 
