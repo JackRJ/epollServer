@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:09:28
- * @LastEditTime: 2020-07-05 16:44:01
+ * @LastEditTime: 2020-07-24 15:50:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/Util.cpp
@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <time.h>
 
 const int MAX_BUFF = 4096;
 
@@ -168,10 +169,14 @@ ssize_t writen(int fd, void *buff, size_t n)
 
 void worker(std::shared_ptr<void> args)
 {
+    //clock_t start,ends;
+    //start=clock();
     std::shared_ptr<Args> args_ = std::static_pointer_cast<Args>(args);
     // malloc error?
     // std::shared_ptr<HttpData> httpData(new HttpData(args_ -> client));
     // httpData -> startup();
     HttpData httpData(args_ -> client);
     httpData.startup();
+    //ends = clock();
+    //printf("time: %d\n", ends - start);
 }

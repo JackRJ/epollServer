@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-03-16 20:05:44
- * @LastEditTime: 2020-07-12 23:25:18
+ * @LastEditTime: 2020-07-24 16:38:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /try/main.cpp
@@ -21,12 +21,13 @@
 #include "base/FileUtil.h"
 
 #define SERV_PORT 8006
-#define THREAD_NUMBERS 4
+#define THREAD_NUMBERS 5
 #define QUEUE_SIZE 1500
 
 int epfd;
+const int maxevents = 20;
 // 声明epoll_event结构体的变量,ev用于注册事件,数组用于回传要处理的事件
-struct epoll_event ev, events[20];
+struct epoll_event ev, events[maxevents];
 
 int main()
 {
@@ -48,7 +49,7 @@ int main()
     threadPool -> threadpool_create(THREAD_NUMBERS, QUEUE_SIZE);
 
     // 生成用于处理accept的epoll专用的文件描述符，全局变量
-    epfd = epoll_create(1);
+    epfd = epoll_create(maxevents);
     
     listenfd = socket_bind_listen(SERV_PORT);
     if(setSocketNonBlocking(listenfd) == -1)
@@ -69,7 +70,7 @@ int main()
     while (1)
     {
         // 等待epoll事件的发生
-        nfds = epoll_wait(epfd, events, 20, 500);
+        nfds = epoll_wait(epfd, events, maxevents, 500);
 
         //处理所发生的所有事件
         for (size_t i = 0; i < nfds; i++)
@@ -85,7 +86,7 @@ int main()
                 }
                 setSocketNonBlocking(connfd);
                 char *str = inet_ntoa(clientaddr.sin_addr);
-                printf("accept address: %s\n", str);
+                // printf("accept address: %s\n", str);
                 
                 // 设置用于读操作的文件描述符
                 ev.data.fd = connfd;
