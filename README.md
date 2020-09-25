@@ -13,3 +13,12 @@
 
 6、使用 Redis 作为缓存
 
+# Build
+```cpp
+make
+```
+
+# Usage
+```cpp
+./bin/main
+```
